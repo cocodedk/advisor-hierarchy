@@ -502,6 +502,34 @@ Expected: `nothing to commit, working tree clean`
 
 ---
 
+### Task 6: Create `/ah` slash command
+
+**Files:**
+- Create: `~/.claude/commands/ah.md`
+
+- [ ] **Step 1: Create the command file**
+
+```markdown
+Invoke the `advisor-hierarchy` skill to run a 3-tier agent hierarchy on the following task:
+
+$ARGUMENTS
+```
+
+- [ ] **Step 2: Verify command appears in Claude Code**
+
+Type `/ah` in Claude Code — it should appear in the autocomplete list with the description from the skill's frontmatter.
+
+- [ ] **Step 3: Commit**
+
+```bash
+cd ~/projects/advisor-hierarchy
+# Note: ~/.claude/commands/ah.md lives outside the repo — document it in README
+git add -A
+git commit -m "docs: note /ah command file location in README" --allow-empty
+```
+
+---
+
 ## Post-implementation
 
 Once all tasks pass, push to GitHub:

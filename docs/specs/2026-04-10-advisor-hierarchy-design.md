@@ -16,7 +16,7 @@ A 3-tier agent hierarchy implemented as a Claude Code skill set. Mirrors the Ant
 ## Activation
 
 ```bash
-/advisor-hierarchy "your task description here"
+/ah "your task description here"
 ```
 
 Explicit invocation only — the user decides when the hierarchy is worth the overhead. Not auto-triggered.
