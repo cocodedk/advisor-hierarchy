@@ -56,6 +56,29 @@ Benchmarks from the native tool:
 - Sonnet + Opus advisor: +2.7pp on SWE-bench Multilingual, 11.9% cost reduction
 - Haiku + Opus advisor: 2× score improvement on BrowseComp, 85% cheaper than Sonnet alone
 
+## Benchmark
+
+We tested `/ah` against a direct Claude Code build by giving both the same task: build a Breakout game with neon graphics and animations as a single HTML file.
+
+Same spec. Same model family. Different approach.
+
+| Dimension | Direct | /ah | Winner |
+|---|---|---|---|
+| Visual quality | 4/5 | 4/5 | Tie |
+| Code quality | 4/5 | 5/5 | /ah |
+| Feature completeness | 11/11 | 11/11 | Tie |
+| **Total** | **19/21** | **20/21** | **/ah** |
+
+**The difference:** `/ah` decomposed the task into two sequential passes — a Sonnet executor for game mechanics, then a Sonnet executor for visual polish. The forced separation produced measurably cleaner code: a `createState()` factory for restarts, proper mouse-position scaling, keyboard-layout-agnostic input, and tighter physics normalization.
+
+**The cost:** ~59,460 tokens across two agent round-trips vs. a single direct pass. No Opus advisor calls were needed — both tasks were well-specified enough that executors didn't need strategic guidance.
+
+**When `/ah` justifies its overhead:** Tasks where code architecture matters — multi-file work, long-lived code, anything that needs to be maintained. The decomposition forces separation of concerns that a single-pass build tends to skip under pressure.
+
+**When it doesn't:** Throwaway scripts, visuals-only work, or tightly-scoped tasks where the spec is already precise.
+
+See [`benchmark/results.md`](benchmark/results.md) for the full scored report.
+
 ## Uninstall
 
 ```bash
