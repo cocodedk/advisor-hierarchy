@@ -394,6 +394,22 @@
     .conn-label-delegate { fill: var(--mid); }
     .conn-label-advise   { fill: var(--amber); opacity: 0.7; }
 
+    .conn-return {
+      stroke: var(--dim);
+      stroke-width: 1;
+      fill: none;
+      stroke-dasharray: 2 4;
+      opacity: 0.4;
+    }
+
+    .conn-advise-return {
+      stroke: #ffb800;
+      stroke-width: 1;
+      fill: none;
+      stroke-dasharray: 2 4;
+      opacity: 0.3;
+    }
+
     /* ── HOW IT WORKS ── */
     .tiers-grid {
       display: grid;
@@ -968,15 +984,26 @@
       <!-- Master → Executors (delegation, going down) -->
       <line x1="255" y1="100" x2="175" y2="240" class="conn-delegate"/>
       <line x1="445" y1="100" x2="525" y2="240" class="conn-delegate"/>
+      <!-- Executors → Master (return, going up, offset +4px) -->
+      <line x1="259" y1="100" x2="179" y2="240" class="conn-return"/>
+      <line x1="449" y1="100" x2="529" y2="240" class="conn-return"/>
       <!-- Executors → Advisor (consultation, dashed, going down) -->
       <line x1="175" y1="320" x2="315" y2="360" class="conn-advise"/>
       <line x1="525" y1="320" x2="385" y2="360" class="conn-advise"/>
+      <!-- Advisor → Executors (return, going up, offset +3px) -->
+      <line x1="175" y1="317" x2="315" y2="357" class="conn-advise-return"/>
+      <line x1="525" y1="317" x2="385" y2="357" class="conn-advise-return"/>
 
       <!-- Connector labels -->
       <text class="conn-label conn-label-delegate" x="186" y="178" transform="rotate(-35 186 178)">delegate</text>
       <text class="conn-label conn-label-delegate" x="472" y="178" transform="rotate(35 472 178)">delegate</text>
       <text class="conn-label conn-label-advise"   x="198" y="352" transform="rotate(-20 198 352)">consult</text>
       <text class="conn-label conn-label-advise"   x="420" y="352" transform="rotate(20 420 352)">consult</text>
+      <!-- Return path labels -->
+      <text class="conn-label conn-label-delegate" x="208" y="162" transform="rotate(-35 208 162)" font-size="7" opacity="0.55">report</text>
+      <text class="conn-label conn-label-delegate" x="490" y="162" transform="rotate(35 490 162)" font-size="7" opacity="0.55">report</text>
+      <text class="conn-label conn-label-advise"   x="214" y="344" transform="rotate(-20 214 344)" font-size="7" opacity="0.55">plan</text>
+      <text class="conn-label conn-label-advise"   x="432" y="344" transform="rotate(20 432 344)" font-size="7" opacity="0.55">plan</text>
 
       <!-- ── MASTER BOX ── -->
       <g class="tier-master">
@@ -991,7 +1018,7 @@
         <rect x="60" y="240" width="230" height="80" rx="2" fill="#0a0a14" stroke="#4da6ff" stroke-width="1"/>
         <text class="tier-label" x="175" y="282" text-anchor="middle" fill="#4da6ff" font-family="Bebas Neue" font-size="20" letter-spacing="2">HAIKU EXECUTOR</text>
         <text class="tier-sub" x="175" y="299" text-anchor="middle">mechanical tasks · 1-2 files</text>
-        <text class="tier-model" x="175" y="311" text-anchor="middle" fill="#4da6ff" font-family="JetBrains Mono" font-size="8" letter-spacing="2" opacity="0.6">claude-haiku-4.5</text>
+        <text class="tier-model" x="175" y="311" text-anchor="middle" fill="#4da6ff" font-family="JetBrains Mono" font-size="8" letter-spacing="2" opacity="0.6">claude-haiku-4-5</text>
       </g>
 
       <g class="tier-executor">
@@ -1020,9 +1047,23 @@
 
       <!-- ── ANIMATED PARTICLES (consult up, amber) ── -->
       <!-- Haiku → Advisor -->
-      <circle r="2" fill="#ffb800" style="--path: path('M 175,320 L 315,360'); --delay: 1.5s" class="particle-up"/>
+      <circle r="2" fill="#ffb800" opacity="0.45" style="--path: path('M 175,320 L 315,360'); --delay: 1.5s" class="particle-up"/>
       <!-- Sonnet → Advisor -->
-      <circle r="2" fill="#ffb800" style="--path: path('M 525,320 L 385,360'); --delay: 2.2s" class="particle-up"/>
+      <circle r="2" fill="#ffb800" opacity="0.45" style="--path: path('M 525,320 L 385,360'); --delay: 2.2s" class="particle-up"/>
+
+      <!-- ── ANIMATED PARTICLES (return up, executor → master) ── -->
+      <!-- Haiku → Master -->
+      <circle r="1.5" fill="#8888aa" style="--path: path('M 179,240 L 259,100'); --delay: 1.2s" class="particle-up"/>
+      <circle r="1.5" fill="#8888aa" style="--path: path('M 179,240 L 259,100'); --delay: 2.0s" class="particle-up"/>
+      <!-- Sonnet → Master -->
+      <circle r="1.5" fill="#8888aa" style="--path: path('M 529,240 L 449,100'); --delay: 1.6s" class="particle-up"/>
+      <circle r="1.5" fill="#8888aa" style="--path: path('M 529,240 L 449,100'); --delay: 2.4s" class="particle-up"/>
+
+      <!-- ── ANIMATED PARTICLES (return up, advisor → executor) ── -->
+      <!-- Advisor → Haiku -->
+      <circle r="1.5" fill="#ffb800" opacity="0.35" style="--path: path('M 315,357 L 175,317'); --delay: 2.8s" class="particle-up"/>
+      <!-- Advisor → Sonnet -->
+      <circle r="1.5" fill="#ffb800" opacity="0.35" style="--path: path('M 385,357 L 525,317'); --delay: 3.5s" class="particle-up"/>
 
       <!-- ── TIER LABELS LEFT SIDE ── -->
       <text x="14" y="65"  font-family="JetBrains Mono" font-size="8" fill="#3a3a52" letter-spacing="2" text-anchor="middle" transform="rotate(-90 14 65)">TIER 1</text>
