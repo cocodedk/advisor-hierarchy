@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Battleship</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #111;
+      color: #ccc;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+    h1 { color: #7af; font-size: 1.6rem; margin-bottom: 8px; }
+    #status-bar {
+      font-size: 0.9rem;
+      color: #fc0;
+      margin-bottom: 8px;
+      min-height: 1.2em;
+      text-align: center;
+    }
+    #boards-wrap {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+    }
+    .board-container { display: flex; flex-direction: column; align-items: center; }
+    .board-label { font-size: 0.85rem; color: #aaa; margin-bottom: 6px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(10, 34px);
+      grid-template-rows: repeat(10, 34px);
+      gap: 2px;
+      border: 1px solid #333;
+      padding: 2px;
+      background: #1a1a2e;
+    }
+    .cell {
+      width: 34px;
+      height: 34px;
+      background: #1e2a3a;
+      border: 1px solid #2a3a4a;
+      cursor: default;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      position: relative;
+    }
+    .cell.miss { background: #1e2a3a; }
+    .cell.miss::after { content: '·'; color: #556; font-size: 20px; }
+    .cell.hit { background: #5a1a1a; }
+    .cell.hit::after { content: '✕'; color: #f44; font-size: 16px; font-weight: bold; }
+    .cell.sunk { background: #3a1a1a; }
+    .cell.sunk::after { content: '✕'; color: #f00; font-size: 16px; font-weight: bold; }
+    .cell.ship { background: #2a4a5a; }
+    .cell.preview-valid { background: #1a4a1a !important; border-color: #2a8a2a !important; }
+    .cell.preview-invalid { background: #4a1a1a !important; border-color: #8a2a2a !important; }
+    .cell.computer-grid { cursor: crosshair; }
+    .cell.computer-grid.fired { cursor: default; }
+    .cell.computer-grid:not(.fired):hover { background: #2a3a5a; }
+
+    #controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    button {
+      background: #2a3a5a;
+      color: #adf;
+      border: 1px solid #3a5a8a;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-family: monospace;
+      font-size: 0.85rem;
+      border-radius: 3px;
+    }
+    button:hover { background: #3a5a8a; }
+    button:disabled { opacity: 0.4; cursor: default; }
+
+    #hud {
+      display: flex;
+      gap: 32px;
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+    .hud-section { display: flex; flex-direction: column; gap: 3px; }
+    .hud-section span { white-space: nowrap; }
+    .hud-title { color: #7af; font-weight: bold; margin-bottom: 2px; }
+    .ship-ok { color: #4f4; }
+    .ship-sunk { color: #f44; text-decoration: line-through; }
+
+    #overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      z-index: 100;
+    }
+    #overlay h2 { font-size: 2rem; color: #7af; }
+    #overlay p { color: #ccc; text-align: center; max-width: 340px; }
+    #overlay button { font-size: 1rem; padding: 10px 24px; }
+    #overlay.hidden { display: none; }
+  </style>
+</head>
+<body>
+<h1>BATTLESHIP</h1>
+<div id="status-bar"></div>
+
+<div id="boards-wrap">
+  <div class="board-container">
+    <div class="board-label">YOUR FLEET</div>
+    <div class="grid" id="player-grid"></div>
+  </div>
+  <div class="board-container">
+    <div class="board-label">ENEMY WATERS</div>
+    <div class="grid" id="computer-grid"></div>
+  </div>
+</div>
+
+<div id="controls">
+  <button id="btn-rotate">Rotate [R] (Horizontal)</button>
+  <button id="btn-random">Random Placement</button>
+  <button id="btn-ready" disabled>Ready!</button>
+</div>
+
+<div id="hud">
+  <div class="hud-section">
+    <div class="hud-title">YOUR SHIPS</div>
+    <div id="player-hud"></div>
+  </div>
+  <div class="hud-section">
+    <div class="hud-title">ENEMY SHIPS</div>
+    <div id="computer-hud"></div>
+  </div>
+</div>
+
+<div id="overlay">
+  <h2 id="overlay-title">BATTLESHIP</h2>
+  <p id="overlay-msg">Place your ships to begin. Click a cell to anchor a ship, press R to rotate. Use "Random" to auto-place all ships.</p>
+  <button id="overlay-btn">Start Game</button>
+</div>
+
+<script>
+// ─── Ship definitions ───────────────────────────────────────────────────────
+const SHIP_DEFS = [
+  { name: 'Carrier',    size: 5 },
+  { name: 'Battleship', size: 4 },
+  { name: 'Cruiser',    size: 3 },
+  { name: 'Submarine',  size: 3 },
+  { name: 'Destroyer',  size: 2 },
+];
+
+// ─── State factory ──────────────────────────────────────────────────────────
+function createState() {
+  return {
+    phase: 'start', // 'start' | 'placement' | 'battle' | 'gameover'
+    turn: 'player',
+    orientation: 'h',
+    currentShipIndex: 0,
+    playerGrid: Array.from({ length: 10 }, () => Array(10).fill('empty')),
+    computerGrid: Array.from({ length: 10 }, () => Array(10).fill('empty')),
+    computerShipGrid: Array.from({ length: 10 }, () => Array(10).fill(false)),
+    playerShips: [],   // [{name, size, cells:[{r,c}], hits:Set, sunk:bool}]
+    computerShips: [], // same
+    computerFiredCells: new Set(),
+    hoverCell: null,   // {r, c} during placement
+  };
+}
+let state = createState();
+
+// ─── Helpers ────────────────────────────────────────────────────────────────
+function shipCells(r, c, size, orientation) {
+  const cells = [];
+  for (let i = 0; i < size; i++) {
+    cells.push(orientation === 'h' ? { r, c: c + i } : { r: r + i, c });
+  }
+  return cells;
+}
+
+function isValidPlacement(grid, cells) {
+  for (const { r, c } of cells) {
+    if (r < 0 || r >= 10 || c < 0 || c >= 10) return false;
+    if (grid[r][c] !== 'empty') return false;
+  }
+  return true;
+}
+
+function placeShipOnGrid(grid, cells) {
+  for (const { r, c } of cells) {
+    grid[r][c] = 'ship';
+  }
+}
+
+function autoPlaceShips(grid) {
+  const ships = [];
+  for (const def of SHIP_DEFS) {
+    let placed = false;
+    while (!placed) {
+      const orient = Math.random() < 0.5 ? 'h' : 'v';
+      const r = Math.floor(Math.random() * 10);
+      const c = Math.floor(Math.random() * 10);
+      const cells = shipCells(r, c, def.size, orient);
+      if (isValidPlacement(grid, cells)) {
+        placeShipOnGrid(grid, cells);
+        const hitSet = new Set();
+        ships.push({ name: def.name, size: def.size, cells, hits: hitSet, sunk: false });
+        placed = true;
+      }
+    }
+  }
+  return ships;
+}
+
+function checkSunk(ship) {
+  return ship.hits.size === ship.size;
+}
+
+function allSunk(ships) {
+  return ships.length === SHIP_DEFS.length && ships.every(s => s.sunk);
+}
+
+function cellKey(r, c) { return r * 10 + c; }
+
+// ─── DOM refs ───────────────────────────────────────────────────────────────
+const playerGridEl   = document.getElementById('player-grid');
+const computerGridEl = document.getElementById('computer-grid');
+const statusBar      = document.getElementById('status-bar');
+const btnRotate      = document.getElementById('btn-rotate');
+const btnRandom      = document.getElementById('btn-random');
+const btnReady       = document.getElementById('btn-ready');
+const playerHud      = document.getElementById('player-hud');
+const computerHud    = document.getElementById('computer-hud');
+const overlay        = document.getElementById('overlay');
+const overlayTitle   = document.getElementById('overlay-title');
+const overlayMsg     = document.getElementById('overlay-msg');
+const overlayBtn     = document.getElementById('overlay-btn');
+
+// ─── Grid cell elements (built once) ────────────────────────────────────────
+function buildGrid(gridEl, isComputer) {
+  gridEl.innerHTML = '';
+  const cells = [];
+  for (let r = 0; r < 10; r++) {
+    const row = [];
+    for (let c = 0; c < 10; c++) {
+      const el = document.createElement('div');
+      el.className = 'cell' + (isComputer ? ' computer-grid' : '');
+      el.dataset.r = r;
+      el.dataset.c = c;
+      gridEl.appendChild(el);
+      row.push(el);
+    }
+    cells.push(row);
+  }
+  return cells;
+}
+
+let playerCells   = buildGrid(playerGridEl, false);
+let computerCells = buildGrid(computerGridEl, true);
+
+// ─── Render ─────────────────────────────────────────────────────────────────
+function render() {
+  renderPlayerGrid();
+  renderComputerGrid();
+  renderHud();
+  renderStatus();
+  renderControls();
+}
+
+function renderPlayerGrid() {
+  // Determine preview cells during placement
+  let previewCells = [];
+  let previewValid = false;
+  if (state.phase === 'placement' && state.hoverCell) {
+    const def = SHIP_DEFS[state.currentShipIndex];
+    if (def) {
+      previewCells = shipCells(state.hoverCell.r, state.hoverCell.c, def.size, state.orientation);
+      previewValid = isValidPlacement(state.playerGrid, previewCells);
+    }
+  }
+  const previewKeys = new Set(previewCells.map(({ r, c }) => cellKey(r, c)));
+
+  for (let r = 0; r < 10; r++) {
+    for (let c = 0; c < 10; c++) {
+      const el = playerCells[r][c];
+      const val = state.playerGrid[r][c];
+      const key = cellKey(r, c);
+      // Reset classes
+      el.className = 'cell';
+      if (previewKeys.has(key)) {
+        el.classList.add(previewValid ? 'preview-valid' : 'preview-invalid');
+      } else if (val === 'ship' || val === 'ship-sunk') {
+        el.classList.add('ship');
+        if (val === 'ship-sunk') el.classList.add('sunk');
+      } else if (val === 'hit') {
+        el.classList.add('hit');
+      } else if (val === 'miss') {
+        el.classList.add('miss');
+      }
+    }
+  }
+}
+
+function renderComputerGrid() {
+  for (let r = 0; r < 10; r++) {
+    for (let c = 0; c < 10; c++) {
+      const el = computerCells[r][c];
+      const val = state.computerGrid[r][c];
+      el.className = 'cell computer-grid';
+      if (val === 'hit') {
+        el.classList.add('hit', 'fired');
+      } else if (val === 'sunk') {
+        el.classList.add('sunk', 'fired');
+      } else if (val === 'miss') {
+        el.classList.add('miss', 'fired');
+      }
+    }
+  }
+}
+
+function renderHud() {
+  function shipHtml(ships, defs) {
+    if (ships.length === 0) {
+      return defs.map(d => `<span class="ship-ok">${d.name} (${d.size})</span>`).join('');
+    }
+    return ships.map(s => {
+      const cls = s.sunk ? 'ship-sunk' : 'ship-ok';
+      const hitsStr = s.sunk ? 'SUNK' : `${s.hits.size}/${s.size}`;
+      return `<span class="${cls}">${s.name} [${hitsStr}]</span>`;
+    }).join('');
+  }
+  playerHud.innerHTML   = shipHtml(state.playerShips, SHIP_DEFS);
+  computerHud.innerHTML = shipHtml(state.computerShips, SHIP_DEFS);
+}
+
+function renderStatus() {
+  if (state.phase === 'placement') {
+    const def = SHIP_DEFS[state.currentShipIndex];
+    if (def) {
+      statusBar.textContent = `Place your ${def.name} (size ${def.size}) — ${state.orientation === 'h' ? 'Horizontal' : 'Vertical'}`;
+    } else {
+      statusBar.textContent = 'All ships placed. Click Ready!';
+    }
+  } else if (state.phase === 'battle') {
+    statusBar.textContent = state.turn === 'player' ? 'Your turn — click enemy waters to fire!' : 'Computer is thinking...';
+  } else {
+    statusBar.textContent = '';
+  }
+}
+
+function renderControls() {
+  const inPlacement = state.phase === 'placement';
+  btnRotate.disabled = !inPlacement;
+  btnRandom.disabled = !inPlacement;
+  btnReady.disabled  = !(inPlacement && state.currentShipIndex >= SHIP_DEFS.length);
+  btnRotate.textContent = `Rotate [R] (${state.orientation === 'h' ? 'Horizontal' : 'Vertical'})`;
+}
+
+// ─── Placement logic ─────────────────────────────────────────────────────────
+function placeCurrentShip(r, c) {
+  const def = SHIP_DEFS[state.currentShipIndex];
+  if (!def) return;
+  const cells = shipCells(r, c, def.size, state.orientation);
+  if (!isValidPlacement(state.playerGrid, cells)) return;
+  placeShipOnGrid(state.playerGrid, cells);
+  const hitSet = new Set();
+  state.playerShips.push({ name: def.name, size: def.size, cells, hits: hitSet, sunk: false });
+  state.currentShipIndex++;
+  render();
+}
+
+function doRandomPlacement() {
+  // Reset player grid and ships
+  state.playerGrid = Array.from({ length: 10 }, () => Array(10).fill('empty'));
+  state.playerShips = [];
+  state.currentShipIndex = 0;
+  state.playerShips = autoPlaceShips(state.playerGrid);
+  state.currentShipIndex = SHIP_DEFS.length;
+  render();
+}
+
+// ─── Battle logic ─────────────────────────────────────────────────────────────
+function playerFire(r, c) {
+  if (state.phase !== 'battle' || state.turn !== 'player') return;
+  if (state.computerGrid[r][c] !== 'empty') return; // already fired
+
+  // Check if ship is there
+  const shipHere = state.computerShips.find(s => s.cells.some(cell => cell.r === r && cell.c === c));
+  if (shipHere) {
+    shipHere.hits.add(cellKey(r, c));
+    if (checkSunk(shipHere)) {
+      shipHere.sunk = true;
+      // Reveal sunk ship cells
+      for (const cell of shipHere.cells) {
+        state.computerGrid[cell.r][cell.c] = 'sunk';
+      }
+    } else {
+      state.computerGrid[r][c] = 'hit';
+    }
+  } else {
+    state.computerGrid[r][c] = 'miss';
+  }
+
+  if (allSunk(state.computerShips)) {
+    state.phase = 'gameover';
+    render();
+    showOverlay('YOU WIN!', 'All enemy ships have been sunk. Well done, Admiral!', 'Play Again');
+    return;
+  }
+
+  state.turn = 'computer';
+  render();
+  setTimeout(computerTurn, 600);
+}
+
+function computerTurn() {
+  if (state.phase !== 'battle') return;
+
+  // Build list of unfired cells
+  const available = [];
+  for (let r = 0; r < 10; r++) {
+    for (let c = 0; c < 10; c++) {
+      const key = cellKey(r, c);
+      if (!state.computerFiredCells.has(key)) {
+        available.push({ r, c });
+      }
+    }
+  }
+  if (available.length === 0) return; // shouldn't happen
+
+  const idx = Math.floor(Math.random() * available.length);
+  const { r, c } = available[idx];
+  state.computerFiredCells.add(cellKey(r, c));
+
+  const shipHere = state.playerShips.find(s => s.cells.some(cell => cell.r === r && cell.c === c));
+  if (shipHere) {
+    shipHere.hits.add(cellKey(r, c));
+    if (checkSunk(shipHere)) {
+      shipHere.sunk = true;
+      for (const cell of shipHere.cells) {
+        state.playerGrid[cell.r][cell.c] = 'ship-sunk';
+      }
+    } else {
+      state.playerGrid[r][c] = 'hit';
+    }
+  } else {
+    state.playerGrid[r][c] = 'miss';
+  }
+
+  if (allSunk(state.playerShips)) {
+    state.phase = 'gameover';
+    render();
+    showOverlay('YOU LOSE', 'All your ships have been sunk. Better luck next time!', 'Play Again');
+    return;
+  }
+
+  state.turn = 'player';
+  render();
+}
+
+// ─── Overlay helpers ─────────────────────────────────────────────────────────
+function showOverlay(title, msg, btnText) {
+  overlayTitle.textContent = title;
+  overlayMsg.textContent   = msg;
+  overlayBtn.textContent   = btnText;
+  overlay.classList.remove('hidden');
+}
+
+function hideOverlay() {
+  overlay.classList.add('hidden');
+}
+
+// ─── Event handlers ──────────────────────────────────────────────────────────
+// Player grid: placement hover + click
+playerGridEl.addEventListener('mousemove', e => {
+  if (state.phase !== 'placement') return;
+  const el = e.target.closest('.cell');
+  if (!el) { state.hoverCell = null; renderPlayerGrid(); return; }
+  const r = +el.dataset.r;
+  const c = +el.dataset.c;
+  if (!state.hoverCell || state.hoverCell.r !== r || state.hoverCell.c !== c) {
+    state.hoverCell = { r, c };
+    renderPlayerGrid();
+  }
+});
+
+playerGridEl.addEventListener('mouseleave', () => {
+  state.hoverCell = null;
+  renderPlayerGrid();
+});
+
+playerGridEl.addEventListener('click', e => {
+  if (state.phase !== 'placement') return;
+  const el = e.target.closest('.cell');
+  if (!el) return;
+  placeCurrentShip(+el.dataset.r, +el.dataset.c);
+});
+
+// Computer grid: fire
+computerGridEl.addEventListener('click', e => {
+  if (state.phase !== 'battle' || state.turn !== 'player') return;
+  const el = e.target.closest('.cell');
+  if (!el) return;
+  playerFire(+el.dataset.r, +el.dataset.c);
+});
+
+// Rotate button
+btnRotate.addEventListener('click', () => {
+  state.orientation = state.orientation === 'h' ? 'v' : 'h';
+  renderControls();
+  renderStatus();
+  if (state.hoverCell) renderPlayerGrid();
+});
+
+// Random button
+btnRandom.addEventListener('click', () => {
+  doRandomPlacement();
+});
+
+// Ready button
+btnReady.addEventListener('click', () => {
+  if (state.currentShipIndex < SHIP_DEFS.length) return;
+  // Computer places ships
+  state.computerShips = autoPlaceShips(state.computerGrid);
+  // Mark computerShipGrid (not used for display, kept for reference)
+  state.phase = 'battle';
+  state.turn  = 'player';
+  state.hoverCell = null;
+  hideOverlay();
+  render();
+});
+
+// Overlay button
+overlayBtn.addEventListener('click', () => {
+  if (state.phase === 'start') {
+    hideOverlay();
+    state.phase = 'placement';
+    render();
+  } else if (state.phase === 'gameover') {
+    // Restart
+    state = createState();
+    state.phase = 'placement';
+    playerCells   = buildGrid(playerGridEl, false);
+    computerCells = buildGrid(computerGridEl, true);
+    // Re-attach cell mouse events (delegated, so grids still work)
+    hideOverlay();
+    render();
+  }
+});
+
+// Keyboard: R to rotate
+document.addEventListener('keydown', e => {
+  if (e.code === 'KeyR' && state.phase === 'placement') {
+    state.orientation = state.orientation === 'h' ? 'v' : 'h';
+    renderControls();
+    renderStatus();
+    if (state.hoverCell) renderPlayerGrid();
+  }
+});
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+showOverlay('BATTLESHIP', 'Place your ships to begin. Click a cell to anchor a ship, press R to rotate. Use "Random" to auto-place all ships.', 'Start Game');
+render();
+</script>
+</body>
+</html>
