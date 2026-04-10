@@ -687,6 +687,7 @@ let compShips = [];
 
 // tracking
 let firedCells = new Set(); // computer already fired these (as "r,c")
+let targetQueue = []; // hunt/target AI queue
 let turn = 'player';
 let playerShotsFired = 0;
 let playerHits = 0;
@@ -739,6 +740,7 @@ function startGame() {
   playerHits = 0;
   computerSunkCount = 0;
   firedCells = new Set();
+  targetQueue = [];
   turn = 'player';
 
   // init grids
@@ -1176,7 +1178,7 @@ function scheduleComputerTurn() {
   setTurnIndicator('computer');
   renderComputerGrid(); // remove hover-target
   // disable computer grid clicks
-  setTimeout(doComputerTurn, 900);
+  setTimeout(doComputerTurn, 200);
 }
 
 function doComputerTurn() {
@@ -1193,18 +1195,38 @@ function doComputerTurn() {
   }
   if (available.length === 0) return; // safety guard
 
-  const [r, c] = available[Math.floor(Math.random() * available.length)];
+  // Hunt/target: pick from targetQueue if any valid cells remain, else random
+  let r, c;
+  while (targetQueue.length > 0) {
+    const candidate = targetQueue.shift();
+    if (!firedCells.has(candidate[0] + ',' + candidate[1])) {
+      [r, c] = candidate;
+      break;
+    }
+  }
+  if (r === undefined) {
+    [r, c] = available[Math.floor(Math.random() * available.length)];
+  }
+
   const key = r + ',' + c;
   firedCells.add(key);
   const isHit = playerGrid[r][c] === 'ship';
 
   if (isHit) {
     playerGrid[r][c] = 'hit';
+    // Queue adjacent unfired cells for target mode
+    [[r-1,c],[r+1,c],[r,c-1],[r,c+1]].forEach(([nr, nc]) => {
+      if (nr >= 0 && nr < GRID_SIZE && nc >= 0 && nc < GRID_SIZE &&
+          !firedCells.has(nr + ',' + nc)) {
+        targetQueue.push([nr, nc]);
+      }
+    });
     const ship = playerShips.find(s => s.cells && s.cells.some(([sr, sc]) => sr === r && sc === c));
     if (ship) {
       ship.hitCount++;
       if (ship.hitCount >= ship.size) {
         ship.sunk = true;
+        targetQueue = []; // ship sunk — return to hunt mode
         renderPlayerGrid();
         showHitEffect(getPlayerCell(r, c));
         updateHUD();
