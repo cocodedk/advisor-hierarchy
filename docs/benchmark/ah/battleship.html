@@ -387,6 +387,7 @@ function createState() {
     playerShips: [],   // [{name, size, cells:[{r,c}], hits:Set, sunk:bool}]
     computerShips: [], // same
     computerFiredCells: new Set(),
+    computerTargetQueue: [],
     hoverCell: null,   // {r, c} during placement
   };
 }
@@ -669,7 +670,7 @@ function playerFire(r, c) {
 
   state.turn = 'computer';
   render();
-  setTimeout(computerTurn, 600);
+  setTimeout(computerTurn, 200);
 }
 
 function computerTurn() {
@@ -687,15 +688,36 @@ function computerTurn() {
   }
   if (available.length === 0) return; // shouldn't happen
 
-  const idx = Math.floor(Math.random() * available.length);
-  const { r, c } = available[idx];
+  // Hunt/target: pick from queue if any valid cells remain, else random
+  let r, c;
+  while (state.computerTargetQueue.length > 0) {
+    const candidate = state.computerTargetQueue.shift();
+    if (!state.computerFiredCells.has(cellKey(candidate.r, candidate.c))) {
+      ({ r, c } = candidate);
+      break;
+    }
+  }
+  if (r === undefined) {
+    const idx = Math.floor(Math.random() * available.length);
+    ({ r, c } = available[idx]);
+  }
+
   state.computerFiredCells.add(cellKey(r, c));
 
   const shipHere = state.playerShips.find(s => s.cells.some(cell => cell.r === r && cell.c === c));
   if (shipHere) {
     shipHere.hits.add(cellKey(r, c));
+    // Queue adjacent unfired cells for target mode
+    [[-1,0],[1,0],[0,-1],[0,1]].forEach(([dr, dc]) => {
+      const nr = r + dr, nc = c + dc;
+      if (nr >= 0 && nr < 10 && nc >= 0 && nc < 10 &&
+          !state.computerFiredCells.has(cellKey(nr, nc))) {
+        state.computerTargetQueue.push({ r: nr, c: nc });
+      }
+    });
     if (checkSunk(shipHere)) {
       shipHere.sunk = true;
+      state.computerTargetQueue = []; // ship sunk — return to hunt mode
       for (const cell of shipHere.cells) {
         state.playerGrid[cell.r][cell.c] = 'ship-sunk';
       }
