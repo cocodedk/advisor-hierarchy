@@ -1014,8 +1014,14 @@ function renderPlayerGrid() {
           }
           // head/tail styling
           const idx = ship.cells.findIndex(([sr, sc]) => sr === r && sc === c);
-          if (idx === 0) cell.classList.add(ship.orient === 'v' ? 'ship-head vert' : 'ship-head');
-          if (idx === ship.cells.length - 1) cell.classList.add(ship.orient === 'v' ? 'ship-tail vert' : 'ship-tail');
+          if (idx === 0) {
+            cell.classList.add('ship-head');
+            if (ship.orient === 'v') cell.classList.add('vert');
+          }
+          if (idx === ship.cells.length - 1) {
+            cell.classList.add('ship-tail');
+            if (ship.orient === 'v') cell.classList.add('vert');
+          }
         }
       } else if (state === 'hit') {
         cell.classList.add('hit');
