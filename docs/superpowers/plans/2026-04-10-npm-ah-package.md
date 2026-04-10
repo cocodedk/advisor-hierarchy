@@ -174,7 +174,11 @@ const os = require('os');
 function getConfigDir() {
   if (process.env.CLAUDE_CONFIG_DIR) return process.env.CLAUDE_CONFIG_DIR;
   if (process.platform === 'win32') {
-    return path.join(process.env.APPDATA, 'Claude');
+    const appData = process.env.APPDATA;
+    if (!appData) {
+      throw new Error('APPDATA environment variable is not set. Cannot determine Claude config directory on Windows.');
+    }
+    return path.join(appData, 'Claude');
   }
   return path.join(os.homedir(), '.claude');
 }
@@ -221,10 +225,18 @@ function uninstall() {
 }
 
 const command = process.argv[2];
-if (command === 'uninstall') {
-  uninstall();
-} else {
-  install();
+try {
+  if (!command || command === 'install') {
+    install();
+  } else if (command === 'uninstall') {
+    uninstall();
+  } else {
+    console.error(`Unknown command: "${command}". Usage: npx ah [uninstall]`);
+    process.exit(1);
+  }
+} catch (err) {
+  console.error('Error:', err.message);
+  process.exit(1);
 }
 ```
 
@@ -241,7 +253,7 @@ node --test test/ah.test.js
 ```
 
 Expected output:
-```
+```text
 ✔ install copies skill files and command file (Xms)
 ✔ install is idempotent — running twice does not error (Xms)
 ✔ uninstall removes skill directory and command file (Xms)
@@ -296,7 +308,7 @@ git commit -m "chore: remove install.sh — replaced by npx ah"
 
 Find the `## Install` section. Replace it with:
 
-```markdown
+````markdown
 ## Install
 
 ```bash
@@ -310,7 +322,7 @@ That's it. Works on Mac, Linux, and Windows. Running it again updates to the lat
 ```bash
 npx ah uninstall
 ```
-```
+````
 
 Remove the old `## Uninstall` section (if it exists separately) since it is now covered above.
 
@@ -334,13 +346,13 @@ Find all occurrences of `install.sh` in `CONTRIBUTING.md`. Replace with `npx ah`
 
 Also add a note about the test suite:
 
-```markdown
+````markdown
 ## Running tests
 
 ```bash
 node --test test/ah.test.js
 ```
-```
+````
 
 - [ ] **Step 2: Commit**
 
