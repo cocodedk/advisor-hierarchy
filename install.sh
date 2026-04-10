@@ -11,14 +11,9 @@ if [ -e "$SKILL_DST" ]; then
   exit 0
 fi
 
-# Try symlink first
-ln -s "$SKILL_SRC" "$SKILL_DST" 2>/dev/null && {
-  echo "Skill installed via symlink: $SKILL_DST -> $SKILL_SRC"
-} || {
-  # Fallback to copy
-  cp -r "$SKILL_SRC" "$SKILL_DST"
-  echo "Skill installed via copy: $SKILL_DST"
-}
+# Copy files directly (Claude Code skill scanner does not follow symlinks)
+cp -r "$SKILL_SRC" "$SKILL_DST"
+echo "Skill installed: $SKILL_DST"
 
 # Install /ah command
 mkdir -p "$(dirname "$CMD_SRC")"
