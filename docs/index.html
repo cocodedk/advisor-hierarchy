@@ -896,18 +896,38 @@
     .bench-cost-note strong { color: var(--amber); font-style: normal; }
 
     .bench-play-link {
-      display: inline-block;
-      margin-top: 16px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--green);
       text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.15s;
+      border: 1px solid var(--dim);
+      color: var(--mid);
+      background: transparent;
+      transition: border-color 0.2s, color 0.2s, box-shadow 0.2s, background 0.2s;
+      cursor: pointer;
     }
-    .bench-play-link:hover { border-color: var(--green); }
+    .bench-play-link:hover {
+      border-color: var(--green);
+      color: var(--green);
+      box-shadow: 0 0 12px rgba(0, 255, 136, 0.18);
+    }
+    .bench-ah .bench-play-link {
+      border-color: rgba(0, 255, 136, 0.35);
+      color: var(--green);
+    }
+    .bench-ah .bench-play-link:hover {
+      border-color: var(--green);
+      background: rgba(0, 255, 136, 0.06);
+      box-shadow: 0 0 18px rgba(0, 255, 136, 0.28);
+    }
   </style>
 </head>
 <body>
@@ -1176,7 +1196,7 @@
           <span class="bench-dim-score neutral">11/11</span>
         </li>
       </ul>
-      <a href="benchmark/direct/breakout.html" class="bench-play-link" target="_blank">Play game →</a>
+      <a href="benchmark/direct/breakout.html" class="bench-play-link" target="_blank">▶ Play game</a>
     </div>
 
     <!-- /ah -->
@@ -1198,7 +1218,7 @@
           <span class="bench-dim-score neutral">11/11</span>
         </li>
       </ul>
-      <a href="benchmark/ah/breakout.html" class="bench-play-link" target="_blank">Play game →</a>
+      <a href="benchmark/ah/breakout.html" class="bench-play-link" target="_blank">▶ Play game</a>
       <div class="bench-winner-badge">Winner</div>
     </div>
   </div>
