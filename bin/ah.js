@@ -9,7 +9,11 @@ const os = require('os');
 function getConfigDir() {
   if (process.env.CLAUDE_CONFIG_DIR) return process.env.CLAUDE_CONFIG_DIR;
   if (process.platform === 'win32') {
-    return path.join(process.env.APPDATA, 'Claude');
+    const appData = process.env.APPDATA;
+    if (!appData) {
+      throw new Error('APPDATA environment variable is not set. Cannot determine Claude config directory on Windows.');
+    }
+    return path.join(appData, 'Claude');
   }
   return path.join(os.homedir(), '.claude');
 }
@@ -56,8 +60,16 @@ function uninstall() {
 }
 
 const command = process.argv[2];
-if (command === 'uninstall') {
-  uninstall();
-} else {
-  install();
+try {
+  if (!command || command === 'install') {
+    install();
+  } else if (command === 'uninstall') {
+    uninstall();
+  } else {
+    console.error(`Unknown command: "${command}". Usage: npx ah [uninstall]`);
+    process.exit(1);
+  }
+} catch (err) {
+  console.error('Error:', err.message);
+  process.exit(1);
 }
