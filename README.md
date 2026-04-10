@@ -13,10 +13,10 @@ Built by [Babak Bandpey](https://www.linkedin.com/in/babakbandpey) at [cocode.dk
 ## Install
 
 ```bash
-git clone https://github.com/cocodedk/advisor-hierarchy.git ~/projects/advisor-hierarchy
-cd ~/projects/advisor-hierarchy
-bash install.sh
+npx ah
 ```
+
+That's it. Works on Mac, Linux, and Windows. Running it again updates to the latest version.
 
 ## Usage
 
@@ -82,8 +82,7 @@ See [`benchmark/results.md`](benchmark/results.md) for the full scored report.
 ## Uninstall
 
 ```bash
-rm -rf ~/.claude/skills/advisor-hierarchy
-rm -f ~/.claude/commands/ah.md
+npx ah uninstall
 ```
 
 ## Contributing
