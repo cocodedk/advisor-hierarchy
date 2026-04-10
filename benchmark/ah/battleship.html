@@ -384,7 +384,6 @@ function createState() {
     currentShipIndex: 0,
     playerGrid: Array.from({ length: 10 }, () => Array(10).fill('empty')),
     computerGrid: Array.from({ length: 10 }, () => Array(10).fill('empty')),
-    computerShipGrid: Array.from({ length: 10 }, () => Array(10).fill(false)),
     playerShips: [],   // [{name, size, cells:[{r,c}], hits:Set, sunk:bool}]
     computerShips: [], // same
     computerFiredCells: new Set(),
@@ -420,7 +419,9 @@ function autoPlaceShips(grid) {
   const ships = [];
   for (const def of SHIP_DEFS) {
     let placed = false;
-    while (!placed) {
+    let attempts = 0;
+    while (!placed && attempts < 1000) {
+      attempts++;
       const orient = Math.random() < 0.5 ? 'h' : 'v';
       const r = Math.floor(Math.random() * 10);
       const c = Math.floor(Math.random() * 10);
@@ -431,6 +432,9 @@ function autoPlaceShips(grid) {
         ships.push({ name: def.name, size: def.size, cells, hits: hitSet, sunk: false });
         placed = true;
       }
+    }
+    if (!placed) {
+      return autoPlaceShips(grid);
     }
   }
   return ships;
@@ -628,6 +632,7 @@ function doRandomPlacement() {
   state.playerGrid = Array.from({ length: 10 }, () => Array(10).fill('empty'));
   state.playerShips = [];
   state.currentShipIndex = 0;
+  state.hoverCell = null;
   state.playerShips = autoPlaceShips(state.playerGrid);
   state.currentShipIndex = SHIP_DEFS.length;
   render();
@@ -776,7 +781,6 @@ btnReady.addEventListener('click', () => {
   if (state.currentShipIndex < SHIP_DEFS.length) return;
   // Computer places ships
   state.computerShips = autoPlaceShips(state.computerGrid);
-  // Mark computerShipGrid (not used for display, kept for reference)
   state.phase = 'battle';
   state.turn  = 'player';
   state.hoverCell = null;
