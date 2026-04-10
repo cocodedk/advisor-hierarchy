@@ -37,9 +37,11 @@ function install() {
   const skillDest = path.join(configDir, 'skills', 'advisor-hierarchy');
   const cmdDest = path.join(configDir, 'commands', 'ah.md');
 
+  fs.rmSync(skillDest, { recursive: true, force: true });
   copyDirSync(skillSrc, skillDest);
 
   fs.mkdirSync(path.dirname(cmdDest), { recursive: true });
+  if (fs.existsSync(cmdDest)) fs.unlinkSync(cmdDest);
   fs.writeFileSync(
     cmdDest,
     'Invoke the `advisor-hierarchy` skill to run a 3-tier agent hierarchy on the following task:\n\n$ARGUMENTS\n'
