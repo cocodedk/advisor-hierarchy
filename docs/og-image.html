@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OG Image</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1200px;
+      height: 630px;
+      background: #09090f;
+      font-family: 'JetBrains Mono', monospace;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Noise texture */
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+    }
+
+    /* Grid lines */
+    body::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(#1a1a2e 1px, transparent 1px),
+        linear-gradient(90deg, #1a1a2e 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.4;
+    }
+
+    .main {
+      display: flex;
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── LEFT PANEL ── */
+    .left {
+      width: 560px;
+      padding: 52px 52px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid #1e1e30;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #00ff88;
+      border: 1px solid #00ff88;
+      padding: 5px 12px;
+      width: fit-content;
+      margin-bottom: 28px;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      background: #00ff88;
+      border-radius: 50%;
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 96px;
+      line-height: 0.88;
+      letter-spacing: 0.02em;
+      color: #f0f0fa;
+      margin-bottom: 24px;
+    }
+
+    h1 .outline {
+      color: transparent;
+      -webkit-text-stroke: 1px #2a2a3e;
+    }
+
+    h1 .accent { color: #00ff88; }
+
+    .tagline {
+      font-size: 13px;
+      font-weight: 300;
+      color: #8888aa;
+      line-height: 1.6;
+      max-width: 400px;
+      margin-bottom: 32px;
+    }
+
+    .tagline strong {
+      color: #d4d4e8;
+      font-weight: 500;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      border: 1px solid;
+    }
+
+    .chip-green  { border-color: #00ff88; color: #00ff88; }
+    .chip-blue   { border-color: #4da6ff; color: #4da6ff; }
+    .chip-amber  { border-color: #ffb800; color: #ffb800; }
+    .chip-dim    { border-color: #2a2a3e; color: #555570; }
+
+    /* ── RIGHT PANEL ── */
+    .right {
+      flex: 1;
+      padding: 48px 44px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .tier {
+      padding: 16px 20px;
+      border: 1px solid;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+    }
+
+    .tier-master   { border-color: #d4d4e8; background: rgba(240,240,250,0.03); }
+    .tier-executor { border-color: #4da6ff; background: rgba(77,166,255,0.04); }
+    .tier-advisor  { border-color: #ffb800; background: rgba(255,184,0,0.04); }
+
+    .tier-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 0.05em;
+    }
+
+    .tier-master   .tier-name { color: #f0f0fa; }
+    .tier-executor .tier-name { color: #4da6ff; }
+    .tier-advisor  .tier-name { color: #ffb800; }
+
+    .tier-desc {
+      font-size: 10px;
+      font-weight: 300;
+      color: #555570;
+      letter-spacing: 0.05em;
+    }
+
+    .tier-pill {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid;
+    }
+
+    .tier-master   .tier-pill { border-color: #2a2a3e; color: #3a3a52; }
+    .tier-executor .tier-pill { border-color: #4da6ff; color: #4da6ff; opacity: 0.6; }
+    .tier-advisor  .tier-pill { border-color: #ffb800; color: #ffb800; opacity: 0.7; }
+
+    .connector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-left: 20px;
+    }
+
+    .conn-line {
+      flex: 1;
+      height: 1px;
+      background: #2a2a3e;
+    }
+
+    .conn-label-text {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #2a2a3e;
+    }
+
+    .conn-arrow {
+      width: 0;
+      height: 0;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 6px solid #2a2a3e;
+    }
+
+    /* ── FOOTER BAR ── */
+    .footer-bar {
+      height: 48px;
+      background: #0d0d1a;
+      border-top: 1px solid #1e1e30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 52px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-left-text {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      color: #3a3a52;
+      text-transform: uppercase;
+    }
+
+    .footer-left-text span { color: #555570; }
+
+    .footer-right-text {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      color: #555570;
+      text-transform: uppercase;
+    }
+
+    .footer-right-text em {
+      font-style: normal;
+      color: #00ff88;
+    }
+
+    /* Stat highlights */
+    .stats-row {
+      display: flex;
+      gap: 20px;
+      margin-top: 4px;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stat-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: #00ff88;
+      line-height: 1;
+    }
+
+    .stat-lbl {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #3a3a52;
+    }
+
+    .stat-divider {
+      width: 1px;
+      background: #1e1e30;
+      align-self: stretch;
+    }
+  </style>
+</head>
+<body>
+  <div class="main">
+    <!-- LEFT -->
+    <div class="left">
+      <div>
+        <div class="badge">
+          <span class="badge-dot"></span>
+          Claude Code Skill · MIT
+        </div>
+        <h1>
+          ADVISOR<br>
+          <span class="outline">HIER</span><span class="accent">ARC</span><span class="outline">HY</span>
+        </h1>
+        <p class="tagline">
+          <strong>Opus advises. Sonnet &amp; Haiku execute.</strong><br>
+          3-tier agent hierarchy that mirrors the Anthropic Advisor Tool API — inside Claude Code.
+        </p>
+        <div class="chips">
+          <span class="chip chip-green">/ah "your task"</span>
+          <span class="chip chip-blue">Haiku · Sonnet</span>
+          <span class="chip chip-amber">Opus Advisor</span>
+          <span class="chip chip-dim">Zero config</span>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-val">+2.7pp</div>
+          <div class="stat-lbl">SWE-bench</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-val">-12%</div>
+          <div class="stat-lbl">Cost/task</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-val">2×</div>
+          <div class="stat-lbl">BrowseComp</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right">
+      <div class="tier tier-master">
+        <div class="tier-name">SESSION MASTER</div>
+        <div class="tier-desc">decompose · classify · synthesize</div>
+        <div class="tier-pill">Tier 1</div>
+      </div>
+      <div class="connector">
+        <div class="conn-label-text">delegate</div>
+        <div class="conn-line"></div>
+        <div class="conn-arrow"></div>
+      </div>
+      <div class="tier tier-executor">
+        <div class="tier-name">HAIKU / SONNET EXECUTOR</div>
+        <div class="tier-desc">execute tasks end-to-end</div>
+        <div class="tier-pill">Tier 2</div>
+      </div>
+      <div class="connector">
+        <div class="conn-label-text">consult</div>
+        <div class="conn-line"></div>
+        <div class="conn-arrow"></div>
+      </div>
+      <div class="tier tier-advisor">
+        <div class="tier-name">OPUS ADVISOR</div>
+        <div class="tier-desc">advise only · no tools · ≤3× per task</div>
+        <div class="tier-pill">Tier 3</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <div class="footer-left-text">
+      <span>github.com/</span>cocodedk/advisor-hierarchy
+    </div>
+    <div class="footer-right-text">
+      Built by Babak Bandpey · <em>cocode.dk</em>
+    </div>
+  </div>
+</body>
+</html>
