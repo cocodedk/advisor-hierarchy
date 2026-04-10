@@ -60,3 +60,25 @@ test('uninstall is idempotent — running when not installed does not error', ()
     fs.rmSync(tmpDir, { recursive: true, force: true });
   }
 });
+
+test('unknown command prints usage and exits with error', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ah-test-'));
+  try {
+    let threw = false;
+    let stderr = '';
+    try {
+      execSync(`node "${CLI}" foobar`, {
+        env: { ...process.env, CLAUDE_CONFIG_DIR: tmpDir },
+        encoding: 'utf8',
+        stdio: 'pipe'
+      });
+    } catch (err) {
+      threw = true;
+      stderr = err.stderr || '';
+    }
+    assert.ok(threw, 'expected non-zero exit for unknown command');
+    assert.ok(stderr.includes('Unknown command'), `expected "Unknown command" in stderr, got: ${stderr}`);
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});

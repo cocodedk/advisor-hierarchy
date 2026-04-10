@@ -16,9 +16,10 @@ Skills, rules, and documentation that improve the 3-tier agent hierarchy for gen
 
 1. Fork the repo
 2. Create a branch: `git checkout -b your-feature`
-3. Make your changes
-4. Test by running `npx ah` and invoking `/ah` on a real task
-5. Open a pull request describing: what you changed, why, and how you tested it
+3. Install git hooks: `./scripts/install-hooks.sh`
+4. Make your changes
+5. Test by running `npx ah` and invoking `/ah` on a real task
+6. Open a pull request describing: what you changed, why, and how you tested it
 
 ## Testing skills
 
