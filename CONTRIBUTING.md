@@ -16,18 +16,25 @@ Skills, rules, and documentation that improve the 3-tier agent hierarchy for gen
 
 1. Fork the repo
 2. Create a branch: `git checkout -b your-feature`
-3. Make your changes
-4. Test by running `bash install.sh` and invoking `/ah` on a real task
-5. Open a pull request describing: what you changed, why, and how you tested it
+3. Install git hooks: `./scripts/install-hooks.sh`
+4. Make your changes
+5. Test by running `npx ah` and invoking `/ah` on a real task
+6. Open a pull request describing: what you changed, why, and how you tested it
 
 ## Testing skills
 
 Skills are Markdown — there are no unit tests. Testing means:
-1. Install with `bash install.sh`
+1. Install with `npx ah`
 2. Invoke `/ah "some task"` in Claude Code
 3. Verify the master decomposes and delegates correctly
 4. Verify executors consult Opus at appropriate moments
 5. Verify Opus responses are advice-only (no tool calls, no user output)
+
+## Running tests
+
+```bash
+node --test test/ah.test.js
+```
 
 ## Reporting issues
 

@@ -700,6 +700,198 @@
     h1            { animation: fade-up 0.6s ease both; animation-delay: 0.2s; }
     .hero-sub     { animation: fade-up 0.6s ease both; animation-delay: 0.35s; }
     .hero-cta     { animation: fade-up 0.6s ease both; animation-delay: 0.5s; }
+
+    /* ── BENCHMARK ── */
+    .bench-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--dim);
+      border: 1px solid var(--dim);
+      margin-top: 40px;
+    }
+
+    @media (max-width: 600px) {
+      .bench-grid { grid-template-columns: 1fr; }
+    }
+
+    .bench-card {
+      background: var(--bg);
+      padding: 36px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bench-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+
+    .bench-card.bench-direct::before { background: var(--dim); }
+    .bench-card.bench-ah::before     { background: var(--green); }
+
+    .bench-card-tag {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .bench-direct .bench-card-tag { color: var(--mid); }
+    .bench-ah     .bench-card-tag { color: var(--green); }
+
+    .bench-score {
+      font-family: var(--display);
+      font-size: 72px;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .bench-direct .bench-score { color: var(--mid); }
+    .bench-ah     .bench-score { color: var(--green); }
+
+    .bench-score-denom {
+      font-size: 0.4em;
+      color: var(--dim);
+      letter-spacing: 0;
+    }
+
+    .bench-score-label {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 28px;
+    }
+
+    .bench-dims {
+      list-style: none;
+      border-top: 1px solid var(--dim);
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bench-dim {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+    }
+
+    .bench-dim-name {
+      color: var(--mid);
+      font-weight: 300;
+    }
+
+    .bench-dim-score {
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .bench-dim-score.winner { color: var(--green); }
+    .bench-dim-score.neutral { color: var(--mid); }
+
+    .bench-winner-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--green);
+      border: 1px solid var(--green);
+      padding: 4px 10px;
+      margin-top: 20px;
+    }
+
+    .bench-winner-badge::before {
+      content: '▲';
+      font-size: 7px;
+    }
+
+    .bench-intro {
+      max-width: 640px;
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.75;
+      font-style: italic;
+    }
+
+    .bench-intro strong {
+      color: var(--light);
+      font-style: normal;
+      font-weight: 500;
+    }
+
+    .bench-verdict {
+      margin-top: 32px;
+      border-left: 2px solid var(--green);
+      padding: 20px 24px;
+      background: rgba(0, 255, 136, 0.03);
+    }
+
+    .bench-verdict-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+
+    .bench-verdict p {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.75;
+      font-style: italic;
+    }
+
+    .bench-verdict p strong {
+      color: var(--light);
+      font-style: normal;
+      font-weight: 500;
+    }
+
+    .bench-verdict p em {
+      color: var(--amber);
+      font-style: normal;
+    }
+
+    .bench-cost-note {
+      margin-top: 20px;
+      padding: 14px 16px;
+      border: 1px solid var(--dim);
+      background: var(--bg2);
+      font-size: 11px;
+      color: var(--mid);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .bench-cost-note strong { color: var(--amber); font-style: normal; }
+
+    .bench-play-link {
+      display: inline-block;
+      margin-top: 16px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--green);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s;
+    }
+    .bench-play-link:hover { border-color: var(--green); }
   </style>
 </head>
 <body>
@@ -711,6 +903,7 @@
     <ul class="nav-links">
       <li><a href="#how-it-works">How it works</a></li>
       <li><a href="#install">Install</a></li>
+      <li><a href="#benchmark">Benchmark</a></li>
       <li><a href="https://github.com/cocodedk/advisor-hierarchy">GitHub</a></li>
     </ul>
   </nav>
@@ -908,6 +1101,81 @@
       <div class="stat-label">Cost vs Sonnet alone</div>
       <div class="stat-source">Haiku + Opus advisor on BrowseComp</div>
     </div>
+  </div>
+</section>
+
+<!-- ── BENCHMARK ── -->
+<section class="section" id="benchmark">
+  <div class="section-label">Benchmark · Breakout Game</div>
+
+  <p class="bench-intro">
+    We built the same Breakout game twice — <strong>once directly</strong>, once via <strong>/ah</strong> —
+    from an identical spec, same model family. The forced decomposition into sequential Sonnet passes
+    changed not just the score, but the architecture: cleaner state factories, proper event handling,
+    velocity normalization on every brick hit.
+  </p>
+
+  <div class="bench-grid">
+    <!-- Direct -->
+    <div class="bench-card bench-direct">
+      <div class="bench-card-tag">Approach A · Direct</div>
+      <div class="bench-score">19<span class="bench-score-denom">/21</span></div>
+      <div class="bench-score-label">Total score</div>
+      <ul class="bench-dims">
+        <li class="bench-dim">
+          <span class="bench-dim-name">Visual quality</span>
+          <span class="bench-dim-score neutral">4/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Code quality</span>
+          <span class="bench-dim-score neutral">4/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Feature completeness</span>
+          <span class="bench-dim-score neutral">11/11</span>
+        </li>
+      </ul>
+      <a href="benchmark/direct/breakout.html" class="bench-play-link" target="_blank">Play game →</a>
+    </div>
+
+    <!-- /ah -->
+    <div class="bench-card bench-ah">
+      <div class="bench-card-tag">Approach B · /ah</div>
+      <div class="bench-score">20<span class="bench-score-denom">/21</span></div>
+      <div class="bench-score-label">Total score</div>
+      <ul class="bench-dims">
+        <li class="bench-dim">
+          <span class="bench-dim-name">Visual quality</span>
+          <span class="bench-dim-score neutral">4/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Code quality</span>
+          <span class="bench-dim-score winner">5/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Feature completeness</span>
+          <span class="bench-dim-score neutral">11/11</span>
+        </li>
+      </ul>
+      <a href="benchmark/ah/breakout.html" class="bench-play-link" target="_blank">Play game →</a>
+      <div class="bench-winner-badge">Winner</div>
+    </div>
+  </div>
+
+  <div class="bench-verdict">
+    <div class="bench-verdict-label">Verdict</div>
+    <p>
+      <strong>Use /ah when code architecture matters.</strong>
+      The hierarchy forced a clean separation: game mechanics first, visual polish second.
+      That separation produced <strong>better code</strong> —
+      <em>createState() factory, proper mouse scaling, e.code keyboard input, velocity normalization every brick hit.</em>
+      Skip it for throwaway scripts where structure is irrelevant.
+    </p>
+  </div>
+
+  <div class="bench-cost-note">
+    <strong>Honest cost:</strong> ~59,460 tokens · two agent round-trips · zero Opus advisor calls (tasks were well-specified).
+    /ah wins on code architecture; direct wins on simplicity.
   </div>
 </section>
 

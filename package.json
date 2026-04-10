@@ -1,0 +1,24 @@
+{
+  "name": "ah",
+  "version": "1.0.0",
+  "description": "Install the advisor-hierarchy skill for Claude Code",
+  "bin": {
+    "ah": "bin/ah.js"
+  },
+  "files": [
+    "bin/",
+    "skills/"
+  ],
+  "scripts": {
+    "test": "node --test test/ah.test.js"
+  },
+  "keywords": ["claude-code", "claude", "skill", "advisor-hierarchy"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cocodedk/advisor-hierarchy.git"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
