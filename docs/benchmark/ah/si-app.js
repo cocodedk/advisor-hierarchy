@@ -98,6 +98,7 @@
         rafRef.current = requestAnimationFrame(loop);
         const state = gameRef.current;
         if (!state) return;
+        if (typeof SFX !== 'undefined') SFX.tick(state);
 
         if (state.phase === 'over') {
           drawScene(ctx, state, ts);

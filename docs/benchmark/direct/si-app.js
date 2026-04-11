@@ -101,6 +101,7 @@ function App() {
           updateStarsOnly(s, dt);
           if (s.phase === 'start') updateAliensDemoOnly(s, dt, CONFIG);
           renderFrame(ctx, s, CONFIG, ALIEN_TYPES);
+          if (typeof SFX !== 'undefined') SFX.tick(s);
         }
         return;
       }
@@ -111,6 +112,7 @@ function App() {
 
       updateFrame(s, dt, CONFIG, ALIEN_TYPES);
       renderFrame(ctx, s, CONFIG, ALIEN_TYPES);
+      if (typeof SFX !== 'undefined') SFX.tick(s);
 
       setUi({ score: s.score, hiScore: s.hiScore, level: s.level, lives: s.lives, phase: s.phase });
 
