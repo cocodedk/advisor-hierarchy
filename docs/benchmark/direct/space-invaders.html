@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Space Invaders</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #000; display: flex; align-items: center; justify-content: center;
+           min-height: 100vh; font-family: 'Orbitron', 'Courier New', monospace; overflow: hidden; }
+    .game-container { position: relative; width: 800px; height: 600px; }
+    .game-canvas { position: absolute; top: 0; left: 0; display: block; }
+    .hud { position: absolute; top: 0; left: 0; right: 0; height: 50px;
+           display: flex; align-items: center; justify-content: space-around;
+           padding: 0 16px; z-index: 10; pointer-events: none; }
+    .hud-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .hud-label { font-size: 9px; color: #8888aa; letter-spacing: 2px; }
+    .hud-value { font-size: 16px; color: #00ff88; font-weight: 700; }
+    .lives-icons { display: flex; gap: 6px; }
+    .life-icon { color: #00ff88; font-size: 14px; filter: drop-shadow(0 0 4px #00ff88); }
+    .overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+               z-index: 20; background: rgba(0,0,8,0.75); }
+    .overlay-content { text-align: center; padding: 40px 60px;
+                       border: 1px solid #3a3a52; background: rgba(5,5,20,0.9);
+                       box-shadow: 0 0 40px rgba(0,255,136,0.15); }
+    .title-main { font-size: 56px; font-weight: 900; letter-spacing: 4px; line-height: 1.1;
+                  color: #00ff88; text-shadow: 0 0 20px #00ff88, 0 0 60px rgba(0,255,136,0.4); }
+    .title-sub { font-size: 14px; letter-spacing: 8px; color: #4da6ff; margin: 10px 0 24px; }
+    .overlay-title { font-size: 36px; font-weight: 900; letter-spacing: 4px; margin-bottom: 20px;
+                     text-shadow: 0 0 20px currentColor; }
+    .overlay-score { font-size: 18px; color: #ffb800; letter-spacing: 2px; margin-bottom: 8px; }
+    .new-hi { font-size: 14px; color: #ff4488; letter-spacing: 3px; margin: 8px 0;
+              animation: pulse 0.8s infinite alternate; }
+    .controls-hint { font-size: 11px; color: #8888aa; line-height: 2; margin-bottom: 28px;
+                     letter-spacing: 1px; }
+    .btn-play { font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 700;
+                letter-spacing: 3px; padding: 14px 36px; cursor: pointer; border: 2px solid #00ff88;
+                background: transparent; color: #00ff88;
+                text-shadow: 0 0 8px #00ff88; box-shadow: 0 0 16px rgba(0,255,136,0.3);
+                transition: all 0.2s; margin-top: 8px; }
+    .btn-play:hover { background: #00ff88; color: #000; box-shadow: 0 0 30px rgba(0,255,136,0.7); }
+    @keyframes pulse { from { opacity: 0.6; } to { opacity: 1; text-shadow: 0 0 12px currentColor; } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/htm@3/dist/htm.umd.js"></script>
+  <script src="si-config.js"></script>
+  <script src="si-engine.js"></script>
+  <script src="si-render.js"></script>
+  <script src="si-app.js"></script>
+</body>
+</html>
