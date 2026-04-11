@@ -1307,6 +1307,75 @@
   <div class="bench-cost-note">
     <strong>Hierarchy efficiency:</strong> 2 subtasks · 0 advisor calls · ~67,311 tokens (~28,103 for direct — <strong>2.4× more expensive</strong>). Both subtasks ran CAPABLE tier (sonnet) to completion; no escalation to advisor was needed. The overhead buys 2 pp on visual quality and 1 pp on code quality over a 22-point scale.
   </div>
+
+  <div class="section-label" style="margin-top: 64px;">Benchmark · Space Invaders</div>
+
+  <p class="bench-intro">
+    The same Space Invaders game built twice — <strong>once directly</strong>, once via <strong>/ah</strong> —
+    from an identical spec. The full feature set: player movement and fire, animated alien grid,
+    UFO bonus target, shields, level progression, hi-score persistence, scrolling star field,
+    and Web Audio sound effects. The hierarchy produced a cleaner engine architecture and richer
+    visuals; the direct build matched all features but with less polish on both dimensions.
+  </p>
+
+  <div class="bench-grid">
+    <div class="bench-card bench-direct">
+      <div class="bench-card-tag">Approach A · Direct</div>
+      <div class="bench-score">20<span class="bench-score-denom">/22</span></div>
+      <div class="bench-score-label">Total score</div>
+      <ul class="bench-dims">
+        <li class="bench-dim">
+          <span class="bench-dim-name">Visual quality</span>
+          <span class="bench-dim-score neutral">4/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Code quality</span>
+          <span class="bench-dim-score neutral">4/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Feature completeness</span>
+          <span class="bench-dim-score neutral">12/12</span>
+        </li>
+      </ul>
+      <a href="benchmark/direct/space-invaders.html" class="bench-play-link btn btn-ghost" target="_blank">▶ Play game</a>
+    </div>
+
+    <div class="bench-card bench-ah">
+      <div class="bench-card-tag">Approach B · /ah</div>
+      <div class="bench-score">22<span class="bench-score-denom">/22</span></div>
+      <div class="bench-score-label">Total score</div>
+      <ul class="bench-dims">
+        <li class="bench-dim">
+          <span class="bench-dim-name">Visual quality</span>
+          <span class="bench-dim-score winner">5/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Code quality</span>
+          <span class="bench-dim-score winner">5/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Feature completeness</span>
+          <span class="bench-dim-score winner">12/12</span>
+        </li>
+      </ul>
+      <a href="benchmark/ah/space-invaders.html" class="bench-play-link btn btn-ghost" target="_blank">▶ Play game</a>
+      <div class="bench-winner-badge">Winner</div>
+    </div>
+  </div>
+
+  <div class="bench-verdict">
+    <div class="bench-verdict-label">Verdict</div>
+    <p>
+      <strong>The hierarchy delivered cleaner audio architecture and higher visual polish — the direct build matched all features but not the finish.</strong>
+      The /ah engine pass produced a proper <code>dt</code>-based UFO tick, a decoupled render pipeline, and a modular state factory.
+      The /ah audio pass produced cancellable level-clear fanfares and a smooth UFO oscillator stop with gain ramp-down.
+      <em>The direct build had the same features but skipped both refinements. /ah did both.</em>
+    </p>
+  </div>
+
+  <div class="bench-cost-note">
+    <strong>Hierarchy efficiency:</strong> 2 subtasks · 1 advisor call · ~71,400 tokens (~31,200 for direct — <strong>2.3× more expensive</strong>). CAPABLE tier (sonnet) for both engine and audio passes. The overhead buys 1 pp on visual quality and 1 pp on code quality over a 22-point scale.
+  </div>
 </section>
 
 <!-- ── INSTALL ── -->
