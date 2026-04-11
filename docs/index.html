@@ -1167,7 +1167,7 @@
 
 <!-- ── BENCHMARK ── -->
 <section class="section" id="benchmark">
-  <div class="section-label">Benchmark · Breakout Game</div>
+  <div class="section-label">Benchmark · Breakout</div>
 
   <p class="bench-intro">
     We built the same Breakout game twice — <strong>once directly</strong>, once via <strong>/ah</strong> —
@@ -1237,6 +1237,77 @@
   <div class="bench-cost-note">
     <strong>Honest cost:</strong> ~59,460 tokens · two agent round-trips · zero Opus advisor calls (tasks were well-specified).
     /ah wins on code architecture; direct wins on simplicity.
+  </div>
+
+  <div class="section-label" style="margin-top: 64px;">Benchmark · Battleship</div>
+
+  <p class="bench-intro">
+    The same Battleship game built twice — <strong>once directly</strong>, once via <strong>/ah</strong> —
+    from an identical spec. The /ah hierarchy forced a dedicated visual pass that produced
+    <strong>color-coded ship classes</strong>, an animated phase-aware status bar, and a placement queue
+    the direct build never produced.
+  </p>
+
+  <div class="bench-grid">
+    <div class="bench-card bench-direct">
+      <div class="bench-card-tag">Approach A · Direct</div>
+      <div class="bench-score">17<span class="bench-score-denom">/21</span></div>
+      <div class="bench-score-label">Total score</div>
+      <ul class="bench-dims">
+        <li class="bench-dim">
+          <span class="bench-dim-name">Visual quality</span>
+          <span class="bench-dim-score neutral">3/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Code quality</span>
+          <span class="bench-dim-score neutral">4/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Feature completeness</span>
+          <span class="bench-dim-score neutral">10/11</span>
+        </li>
+      </ul>
+      <a href="benchmark/direct/battleship.html" class="bench-play-link" target="_blank">▶ Play game</a>
+    </div>
+
+    <div class="bench-card bench-ah">
+      <div class="bench-card-tag">Approach B · /ah</div>
+      <div class="bench-score">20<span class="bench-score-denom">/21</span></div>
+      <div class="bench-score-label">Total score</div>
+      <ul class="bench-dims">
+        <li class="bench-dim">
+          <span class="bench-dim-name">Visual quality</span>
+          <span class="bench-dim-score winner">5/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Code quality</span>
+          <span class="bench-dim-score neutral">4/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Feature completeness</span>
+          <span class="bench-dim-score winner">11/11</span>
+        </li>
+      </ul>
+      <a href="benchmark/ah/battleship.html" class="bench-play-link" target="_blank">▶ Play game</a>
+      <div class="bench-winner-badge">Winner</div>
+    </div>
+  </div>
+
+  <div class="bench-verdict">
+    <div class="bench-verdict-label">Verdict</div>
+    <p>
+      <strong>The hierarchy surfaced design decisions the direct build skipped.</strong>
+      Color-coded ship classes (5 distinct colors per ship type), an animated status bar that shifts
+      border color by game phase, and a visual placement queue —
+      all emerged from the decomposition forcing an explicit UX pass.
+      <em>The direct build ships first. /ah ships better.</em>
+    </p>
+  </div>
+
+  <div class="bench-cost-note">
+    <strong>Architecture note:</strong> both builds are modular React 18 + htm (5 JS files each)
+    with full end-to-end Playwright coverage. The /ah build required an extra agent pass for
+    the dedicated visual layer — the direct build skipped it.
   </div>
 </section>
 

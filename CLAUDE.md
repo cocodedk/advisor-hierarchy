@@ -75,6 +75,15 @@ JetBrains Mono      /* monospace / code / buttons */
 
 Button pattern: `.btn` base + `.btn-primary` (green fill → ghost on hover) or `.btn-ghost` (dim border → green on hover).
 
+## Benchmark File Rules
+
+All benchmark game files and their test files **must not exceed 200 lines each**. This means:
+
+- Games must be **modularized**: split into separate JS files (game logic, rendering, AI, state, etc.) rather than one monolithic HTML file
+- If a framework makes the code easier to read, debug, and test, **prefer React** (via CDN — no build step) over vanilla JS for benchmark game files
+- Test files must also be under 200 lines — split into multiple describe-level files if needed
+- The 200-line limit is a hard constraint; refactor proactively when adding features
+
 ## GitHub Pages Deploy
 
 Automatically deploys on push to `master` when files under `docs/**` change. Games in `benchmark/` at the repo root are **not** served — copies live at `docs/benchmark/` for GitHub Pages.
