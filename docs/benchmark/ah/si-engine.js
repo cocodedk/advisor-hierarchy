@@ -109,7 +109,7 @@ function updateFrame(state, dt, input, now) {
     if (sp.life <= 0) state.scorePopups.splice(i, 1);
   }
 
-  tickUFO(state, now);
+  tickUFO(state, now, dt);
   tickParticles(state, dt);
 }
 
@@ -176,7 +176,7 @@ function applyCollisions(state, now) {
   }
 }
 
-function tickUFO(state, now) {
+function tickUFO(state, now, dt) {
   const U = CONFIG.UFO, W = CONFIG.CANVAS.W;
   if (!state.ufo && now >= state.ufoNextMs) {
     const dir = Math.random() < 0.5 ? 1 : -1;
@@ -184,7 +184,7 @@ function tickUFO(state, now) {
       scoreVal: U.SCORES[Math.floor(Math.random() * U.SCORES.length)] };
   }
   if (state.ufo) {
-    state.ufo.x += state.ufo.dir * U.SPEED * (1 / 60);
+    state.ufo.x += state.ufo.dir * U.SPEED * dt;
     if (state.ufo.x < -U.W || state.ufo.x > W + U.W) {
       state.ufo = null; state.ufoNextMs = now + _rnd(U.MIN_MS, U.MAX_MS);
     }

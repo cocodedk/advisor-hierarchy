@@ -57,6 +57,7 @@ function App() {
   const gameRef = useRef(null);
   const rafRef = useRef(null);
   const lastTimeRef = useRef(null);
+  const levelClearScheduledRef = useRef(false);
   const [ui, setUi] = useState({ score: 0, hiScore: 0, level: 1, lives: 3, phase: 'start' });
 
   const startGame = useCallback((level = 1) => {
@@ -116,7 +117,8 @@ function App() {
 
       setUi({ score: s.score, hiScore: s.hiScore, level: s.level, lives: s.lives, phase: s.phase });
 
-      if (s.phase === 'levelclear') {
+      if (s.phase === 'levelclear' && !levelClearScheduledRef.current) {
+        levelClearScheduledRef.current = true;
         setTimeout(() => {
           if (gameRef.current && gameRef.current.phase === 'levelclear') {
             const newState = initState(CONFIG, s.level + 1);
@@ -124,6 +126,7 @@ function App() {
             newState.hiScore = s.hiScore;
             newState.lives = s.lives;
             gameRef.current = newState;
+            levelClearScheduledRef.current = false;
             setUi(u => ({ ...u, phase: 'playing', level: s.level + 1 }));
           }
         }, CONFIG.levelClearDelay);

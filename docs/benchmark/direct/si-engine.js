@@ -1,8 +1,8 @@
 // Pure game state logic — no React, no canvas
 
-function initStars(layers) {
+function initStars(layers, w, h) {
   return layers.map(l => ({ speed: l.speed, stars: Array.from({ length: l.count }, () =>
-    ({ x: Math.random()*800, y: Math.random()*600, r: Math.random()*1.2+0.4, brightness: Math.random()*0.5+0.5 })) }));
+    ({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.2+0.4, brightness: Math.random()*0.5+0.5 })) }));
 }
 
 function initShields(cfg) {
@@ -33,7 +33,7 @@ function initState(cfg, level = 1) {
     alienFireInterval: Math.max(cfg.alien.minFireInterval, cfg.alien.fireInterval * fm),
     playerX: cfg.player.startX, playerBullet: null, alienBullets: [],
     shields: initShields(cfg), ufo: null, ufoTimer: nextUfoTime(cfg),
-    ufoScorePopup: null, particles: [], stars: initStars(cfg.stars), shake: 0, invincible: 0, keys: {},
+    ufoScorePopup: null, particles: [], stars: initStars(cfg.stars, cfg.canvas.width, cfg.canvas.height), shake: 0, invincible: 0, keys: {},
   };
 }
 
@@ -164,16 +164,16 @@ function checkCollisions(state, cfg, alienTypes) {
   }
 }
 
-function updateStars(state) {
+function updateStars(state, w, h) {
   for (const layer of state.stars)
-    for (const s of layer.stars) { s.y += layer.speed; if (s.y > 600) { s.y = 0; s.x = Math.random()*800; } }
+    for (const s of layer.stars) { s.y += layer.speed; if (s.y > h) { s.y = 0; s.x = Math.random()*w; } }
 }
 
 function updateFrame(state, dt, cfg, alienTypes) {
   if (state.phase !== 'playing') return;
   if (state.invincible > 0) state.invincible -= dt * 1000;
   if (state.shake > 0) state.shake -= dt * 1000;
-  updateStars(state);
+  updateStars(state, cfg.canvas.width, cfg.canvas.height);
   const alienReached = updateAliens(state, dt, cfg);
   updateAlienFire(state, dt, cfg);
   updateBullets(state, dt, cfg);

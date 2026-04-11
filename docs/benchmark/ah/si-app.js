@@ -103,7 +103,7 @@
         if (state.phase === 'over') {
           drawScene(ctx, state, ts);
           // Save hi-score once
-          if (state.score > hiScore) {
+          if (state.score > hiScoreRef.current) {
             localStorage.setItem(CONFIG.HI_KEY, state.score);
             setHiScore(state.score);
           }
@@ -147,7 +147,7 @@
         window.removeEventListener('keyup', onUp);
         if (levelClearTimerRef.current) clearTimeout(levelClearTimerRef.current);
       };
-    }, [syncHud, advanceLevel, hiScore]);
+    }, [syncHud, advanceLevel]);
 
     // Update hi-score ref used in loop without re-running the effect
     const hiScoreRef = useRef(hiScore);

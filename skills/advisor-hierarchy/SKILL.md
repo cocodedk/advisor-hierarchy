@@ -86,7 +86,7 @@ def synthesize(results):
 
 ## Executor spawn template
 
-```
+```text
 Agent({
   model: "<tier value>",
   description: "[subtask name]",

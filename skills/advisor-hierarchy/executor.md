@@ -37,8 +37,11 @@ def execute(task):
             if advice.startswith("STOP:"):
                 return BLOCKED(advice)
             if advice.startswith("TRUNCATED:"):
-                consult("continue from truncation")
-                advisor_calls += 1
+                if advisor_calls < 3:
+                    consult("continue from truncation")
+                    advisor_calls += 1
+                else:
+                    return BLOCKED("advisor cap reached during truncation — " + advice)
             continue  # retry with advice
 
         if stuck(3):
