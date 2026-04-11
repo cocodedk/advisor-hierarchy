@@ -387,7 +387,6 @@ function createState() {
     playerShips: [],   // [{name, size, cells:[{r,c}], hits:Set, sunk:bool}]
     computerShips: [], // same
     computerFiredCells: new Set(),
-    computerTargetQueue: [],
     hoverCell: null,   // {r, c} during placement
   };
 }
@@ -676,48 +675,25 @@ function playerFire(r, c) {
 function computerTurn() {
   if (state.phase !== 'battle') return;
 
-  // Build list of unfired cells
+  // Build list of unfired cells and pick one at random
   const available = [];
   for (let r = 0; r < 10; r++) {
     for (let c = 0; c < 10; c++) {
-      const key = cellKey(r, c);
-      if (!state.computerFiredCells.has(key)) {
+      if (!state.computerFiredCells.has(cellKey(r, c))) {
         available.push({ r, c });
       }
     }
   }
-  if (available.length === 0) return; // shouldn't happen
+  if (available.length === 0) return;
 
-  // Hunt/target: pick from queue if any valid cells remain, else random
-  let r, c;
-  while (state.computerTargetQueue.length > 0) {
-    const candidate = state.computerTargetQueue.shift();
-    if (!state.computerFiredCells.has(cellKey(candidate.r, candidate.c))) {
-      ({ r, c } = candidate);
-      break;
-    }
-  }
-  if (r === undefined) {
-    const idx = Math.floor(Math.random() * available.length);
-    ({ r, c } = available[idx]);
-  }
-
+  const { r, c } = available[Math.floor(Math.random() * available.length)];
   state.computerFiredCells.add(cellKey(r, c));
 
   const shipHere = state.playerShips.find(s => s.cells.some(cell => cell.r === r && cell.c === c));
   if (shipHere) {
     shipHere.hits.add(cellKey(r, c));
-    // Queue adjacent unfired cells for target mode
-    [[-1,0],[1,0],[0,-1],[0,1]].forEach(([dr, dc]) => {
-      const nr = r + dr, nc = c + dc;
-      if (nr >= 0 && nr < 10 && nc >= 0 && nc < 10 &&
-          !state.computerFiredCells.has(cellKey(nr, nc))) {
-        state.computerTargetQueue.push({ r: nr, c: nc });
-      }
-    });
     if (checkSunk(shipHere)) {
       shipHere.sunk = true;
-      state.computerTargetQueue = []; // ship sunk — return to hunt mode
       for (const cell of shipHere.cells) {
         state.playerGrid[cell.r][cell.c] = 'ship-sunk';
       }
