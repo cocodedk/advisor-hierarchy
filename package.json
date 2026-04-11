@@ -10,9 +10,17 @@
     "skills/"
   ],
   "scripts": {
-    "test": "node --test test/ah.test.js"
+    "test": "node --test test/ah.test.js",
+    "test:e2e": "node --test test/battleship-direct-e2e.test.js test/battleship-ah-e2e.test.js",
+    "test:e2e:direct": "node --test test/battleship-direct-e2e.test.js",
+    "test:e2e:ah": "node --test test/battleship-ah-e2e.test.js"
   },
-  "keywords": ["claude-code", "claude", "skill", "advisor-hierarchy"],
+  "keywords": [
+    "claude-code",
+    "claude",
+    "skill",
+    "advisor-hierarchy"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -20,5 +28,8 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "playwright": "^1.59.1"
   }
 }

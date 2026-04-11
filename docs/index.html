@@ -1167,7 +1167,7 @@
 
 <!-- ── BENCHMARK ── -->
 <section class="section" id="benchmark">
-  <div class="section-label">Benchmark · Breakout Game</div>
+  <div class="section-label">Benchmark · Breakout</div>
 
   <p class="bench-intro">
     We built the same Breakout game twice — <strong>once directly</strong>, once via <strong>/ah</strong> —
@@ -1237,6 +1237,74 @@
   <div class="bench-cost-note">
     <strong>Honest cost:</strong> ~59,460 tokens · two agent round-trips · zero Opus advisor calls (tasks were well-specified).
     /ah wins on code architecture; direct wins on simplicity.
+  </div>
+
+  <div class="section-label" style="margin-top: 64px;">Benchmark · Battleship</div>
+
+  <p class="bench-intro">
+    The same Battleship game built twice — <strong>once directly</strong>, once via <strong>/ah</strong> —
+    from an identical spec. The hierarchy's forced decomposition improved <strong>both</strong> dimensions:
+    code quality through a dedicated architecture pass, visual quality through a dedicated UX pass.
+    <em>Neither improvement happened in the single-pass direct build.</em>
+  </p>
+
+  <div class="bench-grid">
+    <div class="bench-card bench-direct">
+      <div class="bench-card-tag">Approach A · Direct</div>
+      <div class="bench-score">20<span class="bench-score-denom">/22</span></div>
+      <div class="bench-score-label">Total score</div>
+      <ul class="bench-dims">
+        <li class="bench-dim">
+          <span class="bench-dim-name">Visual quality</span>
+          <span class="bench-dim-score neutral">4/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Code quality</span>
+          <span class="bench-dim-score neutral">4/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Feature completeness</span>
+          <span class="bench-dim-score neutral">12/12</span>
+        </li>
+      </ul>
+      <a href="benchmark/direct/battleship.html" class="bench-play-link btn btn-ghost" target="_blank">▶ Play game</a>
+    </div>
+
+    <div class="bench-card bench-ah">
+      <div class="bench-card-tag">Approach B · /ah</div>
+      <div class="bench-score">22<span class="bench-score-denom">/22</span></div>
+      <div class="bench-score-label">Total score</div>
+      <ul class="bench-dims">
+        <li class="bench-dim">
+          <span class="bench-dim-name">Visual quality</span>
+          <span class="bench-dim-score winner">5/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Code quality</span>
+          <span class="bench-dim-score winner">5/5</span>
+        </li>
+        <li class="bench-dim">
+          <span class="bench-dim-name">Feature completeness</span>
+          <span class="bench-dim-score winner">12/12</span>
+        </li>
+      </ul>
+      <a href="benchmark/ah/battleship.html" class="bench-play-link btn btn-ghost" target="_blank">▶ Play game</a>
+      <div class="bench-winner-badge">Winner</div>
+    </div>
+  </div>
+
+  <div class="bench-verdict">
+    <div class="bench-verdict-label">Verdict</div>
+    <p>
+      <strong>The hierarchy improved both code and visuals simultaneously — the direct build got neither right on first pass.</strong>
+      The architecture pass (Task 1) produced factory state, available-cells AI, and event delegation immediately.
+      The visual pass (Task 2) added Orbitron typography, per-type ship colors, and an animated phase-aware HUD with per-ship indicators.
+      <em>The direct build skipped both specialisations. /ah did them both.</em>
+    </p>
+  </div>
+
+  <div class="bench-cost-note">
+    <strong>Hierarchy efficiency:</strong> 2 subtasks · 0 advisor calls · ~67,311 tokens (~28,103 for direct — <strong>2.4× more expensive</strong>). Both subtasks ran CAPABLE tier (sonnet) to completion; no escalation to advisor was needed. The overhead buys 2 pp on visual quality and 1 pp on code quality over a 22-point scale.
   </div>
 </section>
 

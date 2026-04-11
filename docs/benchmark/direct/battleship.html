@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battleship</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0a0a1a; --panel: #0d1530; --border: #1e3a5f;
+  --neon-blue: #00d4ff; --neon-green: #00ff88; --neon-red: #ff2244;
+  --text: #c8d8f0; --text-dim: #5a7a9a; --cell-size: 34px;
+}
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+.overlay { position: fixed; inset: 0; background: radial-gradient(ellipse at center, #0d1a3a 0%, #0a0a1a 70%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; z-index: 100; }
+.overlay h1 { font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 900; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--neon-blue);
+  text-shadow: 0 0 10px var(--neon-blue), 0 0 40px var(--neon-blue); }
+#overlay-title { color: var(--neon-green); text-shadow: 0 0 20px var(--neon-green), 0 0 60px var(--neon-green); }
+#overlay-title.defeat { color: var(--neon-red); text-shadow: 0 0 20px var(--neon-red); }
+.overlay-sub { color: var(--text-dim); font-size: 1.1rem; }
+#game-ui { width: 100%; max-width: 1100px; padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.game-header { width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; }
+.game-title { font-size: 1.2rem; font-weight: 700; color: var(--neon-blue);
+  text-shadow: 0 0 10px rgba(0,212,255,0.5); letter-spacing: 0.1em; }
+.turn-badge { font-size: 0.9rem; font-weight: 600; padding: 5px 14px; border-radius: 20px; }
+.player-turn { background: rgba(0,255,136,0.1); border: 1px solid var(--neon-green); color: var(--neon-green); }
+.computer-turn { background: rgba(255,34,68,0.1); border: 1px solid var(--neon-red); color: var(--neon-red); }
+.grids-area { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; justify-content: center; width: 100%; }
+.grid-panel { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.grid-panel h2 { font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); }
+.grid-wrap { display: grid; grid-template-columns: 20px repeat(10, var(--cell-size));
+  grid-template-rows: 20px repeat(10, var(--cell-size)); gap: 2px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 4px; }
+.grid-label { display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; color: var(--text-dim); user-select: none; }
+.cell { width: var(--cell-size); height: var(--cell-size); background: #08122a;
+  border: 1px solid #0f2040; border-radius: 3px; cursor: default; position: relative;
+  transition: background 0.15s; overflow: hidden; }
+.cell.ship { background: #1a6b9e; border-color: var(--neon-blue); box-shadow: inset 0 0 6px rgba(0,212,255,0.25); }
+.cell.targetable { cursor: crosshair; }
+.cell.targetable:hover { background: rgba(0,212,255,0.15); border-color: var(--neon-blue); }
+.cell.hit { background: #1a0808; border-color: var(--neon-red); }
+.cell.sunk { background: #2a0808; border-color: var(--neon-red); box-shadow: 0 0 8px rgba(255,34,68,0.5); }
+.cell.miss { background: #0d1a2e; border-color: #1a3a5f; }
+.cell.enemy-hit { background: rgba(255,34,68,0.3); border-color: var(--neon-red); }
+.cell.miss-player { background: #08122a; }
+.cell.preview-valid { background: rgba(0,255,136,0.2); border-color: var(--neon-green); cursor: crosshair; }
+.cell.preview-invalid { background: rgba(255,34,68,0.2); border-color: var(--neon-red); cursor: not-allowed; }
+.cell.miss::after, .cell.miss-player::after { content: ''; position: absolute; width: 8px; height: 8px;
+  background: #334466; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+.hit-cross { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; color: var(--neon-red); text-shadow: 0 0 8px var(--neon-red); pointer-events: none; }
+#placement-panel { width: 100%; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  padding: 10px 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; }
+.btn { padding: 8px 18px; border: 1px solid var(--border); background: rgba(0,0,0,0.4); color: var(--text);
+  border-radius: 6px; font-size: 0.9rem; font-weight: 600; cursor: pointer; letter-spacing: 0.05em;
+  transition: all 0.2s; text-transform: uppercase; }
+.btn:hover { border-color: var(--neon-blue); color: var(--neon-blue); }
+.btn.primary { background: rgba(0,212,255,0.1); border-color: var(--neon-blue); color: var(--neon-blue); font-size: 1.1rem; padding: 12px 40px; }
+.btn.primary:hover { background: rgba(0,212,255,0.2); }
+.btn.danger { border-color: var(--neon-red); color: var(--neon-red); }
+.btn.success { border-color: var(--neon-green); color: var(--neon-green); }
+.btn.horizontal { background: rgba(0,212,255,0.1); border-color: var(--neon-blue); color: var(--neon-blue); }
+.btn.vertical { background: rgba(0,255,136,0.1); border-color: var(--neon-green); color: var(--neon-green); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn:disabled:hover { border-color: var(--border); color: var(--text); }
+.ship-list { display: flex; flex-direction: column; gap: 4px; width: 100%; max-width: 380px; }
+.ship-list-title { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 2px; }
+.ship-entry { display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 3px 6px; border-radius: 4px; font-size: 0.8rem; }
+.ship-entry.sunk { opacity: 0.45; text-decoration: line-through; }
+.ship-entry-name { color: var(--text); min-width: 80px; }
+.ship-dots { display: flex; gap: 3px; }
+.dot { width: 10px; height: 10px; border-radius: 2px; background: #1a6b9e; border: 1px solid var(--neon-blue); }
+.dot.dot-hit { background: var(--neon-red); border-color: var(--neon-red); }
+@media (max-width: 700px) { :root { --cell-size: 28px; } .grids-area { gap: 12px; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/htm@3/dist/htm.umd.js"></script>
+<script src="constants.js"></script>
+<script src="gameLogic.js"></script>
+<script src="Grid.js"></script>
+<script src="ShipList.js"></script>
+<script src="App.js"></script>
+</body>
+</html>
