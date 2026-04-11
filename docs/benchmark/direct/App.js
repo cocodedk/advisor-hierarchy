@@ -119,10 +119,12 @@ function App() {
         </div>
       </div>
       ${phase === 'placement' && html`<div id="placement-panel">
-        <span id="rotation-btn" className=${'btn ' + (orient==='h'?'horizontal':'vertical')}
+        <button type="button" id="rotation-btn"
+          className=${'btn ' + (orient==='h'?'horizontal':'vertical')}
+          aria-pressed=${orient === 'v'}
           onClick=${() => setGame(prev => ({ ...prev, orient: prev.orient==='h'?'v':'h' }))}>
           ${orient === 'h' ? '↔ Horizontal' : '↕ Vertical'}
-        </span>
+        </button>
         <button className="btn" onClick=${() => {
           const p = randomPlacements();
           setGame(prev => ({ ...prev, phase: 'battle', turn: 'player', shipIdx: SHIPS.length,
@@ -130,7 +132,7 @@ function App() {
         }}>Random</button>
         <button className="btn danger" onClick=${() => setGame(prev => ({ ...prev, shipIdx: 0,
           playerGrid: emptyGrid(), playerShips: SHIPS.map(s => ({ ...s, cells: [], sunk: false, hits: 0 })),
-          hoverRow: -1, hoverCol: -1 }))}>Reset</button>
+          hoverRow: -1, hoverCol: -1, orient: 'h' }))}>Reset</button>
         <button id="btn-ready" className="btn success" disabled=${!allPlaced}
           onClick=${() => setGame(prev => ({ ...prev, phase: 'battle', turn: 'player' }))}>START BATTLE</button>
       </div>`}

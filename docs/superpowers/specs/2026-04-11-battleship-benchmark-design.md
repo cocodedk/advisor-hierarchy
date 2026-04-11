@@ -18,7 +18,7 @@ Score both and record results in `benchmark/results-battleship.md`.
 
 ## Game Spec
 
-Single HTML file. Canvas or DOM — builder's choice. Two 10×10 grids side by side (player left, computer right).
+Single-page app (React 18 + htm via CDN, no build step). Modular JS files acceptable. Two 10×10 grids side by side (player left, computer right).
 
 ### Ship Placement Phase
 

@@ -1243,20 +1243,20 @@
 
   <p class="bench-intro">
     The same Battleship game built twice — <strong>once directly</strong>, once via <strong>/ah</strong> —
-    from an identical spec. The /ah hierarchy forced a dedicated visual pass that produced
-    <strong>color-coded ship classes</strong>, an animated phase-aware status bar, and a placement queue
-    the direct build never produced.
+    from an identical spec. The hierarchy's forced decomposition improved <strong>both</strong> dimensions:
+    code quality through a dedicated architecture pass, visual quality through a dedicated UX pass.
+    <em>Neither improvement happened in the single-pass direct build.</em>
   </p>
 
   <div class="bench-grid">
     <div class="bench-card bench-direct">
       <div class="bench-card-tag">Approach A · Direct</div>
-      <div class="bench-score">17<span class="bench-score-denom">/21</span></div>
+      <div class="bench-score">20<span class="bench-score-denom">/22</span></div>
       <div class="bench-score-label">Total score</div>
       <ul class="bench-dims">
         <li class="bench-dim">
           <span class="bench-dim-name">Visual quality</span>
-          <span class="bench-dim-score neutral">3/5</span>
+          <span class="bench-dim-score neutral">4/5</span>
         </li>
         <li class="bench-dim">
           <span class="bench-dim-name">Code quality</span>
@@ -1264,7 +1264,7 @@
         </li>
         <li class="bench-dim">
           <span class="bench-dim-name">Feature completeness</span>
-          <span class="bench-dim-score neutral">10/11</span>
+          <span class="bench-dim-score neutral">12/12</span>
         </li>
       </ul>
       <a href="benchmark/direct/battleship.html" class="bench-play-link btn btn-ghost" target="_blank">▶ Play game</a>
@@ -1272,7 +1272,7 @@
 
     <div class="bench-card bench-ah">
       <div class="bench-card-tag">Approach B · /ah</div>
-      <div class="bench-score">20<span class="bench-score-denom">/21</span></div>
+      <div class="bench-score">22<span class="bench-score-denom">/22</span></div>
       <div class="bench-score-label">Total score</div>
       <ul class="bench-dims">
         <li class="bench-dim">
@@ -1281,11 +1281,11 @@
         </li>
         <li class="bench-dim">
           <span class="bench-dim-name">Code quality</span>
-          <span class="bench-dim-score neutral">4/5</span>
+          <span class="bench-dim-score winner">5/5</span>
         </li>
         <li class="bench-dim">
           <span class="bench-dim-name">Feature completeness</span>
-          <span class="bench-dim-score winner">11/11</span>
+          <span class="bench-dim-score winner">12/12</span>
         </li>
       </ul>
       <a href="benchmark/ah/battleship.html" class="bench-play-link btn btn-ghost" target="_blank">▶ Play game</a>
@@ -1296,18 +1296,15 @@
   <div class="bench-verdict">
     <div class="bench-verdict-label">Verdict</div>
     <p>
-      <strong>The hierarchy surfaced design decisions the direct build skipped.</strong>
-      Color-coded ship classes (5 distinct colors per ship type), an animated status bar that shifts
-      border color by game phase, and a visual placement queue —
-      all emerged from the decomposition forcing an explicit UX pass.
-      <em>The direct build ships first. /ah ships better.</em>
+      <strong>The hierarchy improved both code and visuals simultaneously — the direct build got neither right on first pass.</strong>
+      The architecture pass (Task 1) produced factory state, available-cells AI, and event delegation immediately.
+      The visual pass (Task 2) added Orbitron typography, per-type ship colors, and an animated phase-aware HUD with per-ship indicators.
+      <em>The direct build skipped both specialisations. /ah did them both.</em>
     </p>
   </div>
 
   <div class="bench-cost-note">
-    <strong>Architecture note:</strong> both builds are modular React 18 + htm (5 JS files each)
-    with full end-to-end Playwright coverage. The /ah build required an extra agent pass for
-    the dedicated visual layer — the direct build skipped it.
+    <strong>Hierarchy efficiency:</strong> 2 subtasks · 0 advisor calls · ~67,311 tokens (~28,103 for direct — <strong>2.4× more expensive</strong>). Both subtasks ran CAPABLE tier (sonnet) to completion; no escalation to advisor was needed. The overhead buys 2 pp on visual quality and 1 pp on code quality over a 22-point scale.
   </div>
 </section>
 

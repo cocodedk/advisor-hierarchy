@@ -24,7 +24,7 @@ before(async () => {
   server = createServer(serve);
   await new Promise(r => server.listen(0, '127.0.0.1', r));
   port = server.address().port;
-  browser = await chromium.launch({ headless: false, slowMo: 0 });
+  browser = await chromium.launch({ headless: true, slowMo: 0 });
 });
 
 after(async () => {
@@ -34,7 +34,8 @@ after(async () => {
 
 async function testGame(page, urlPath, opts = {}) {
   const jsErrors = [];
-  page.on('pageerror', e => jsErrors.push(e.message));
+  const onPageError = e => jsErrors.push(e.message);
+  page.on('pageerror', onPageError);
 
   await page.goto(`http://127.0.0.1:${port}${urlPath}`);
 
@@ -116,6 +117,7 @@ async function testGame(page, urlPath, opts = {}) {
     gameOver = await isGameOver();
   }
 
+  page.removeListener('pageerror', onPageError);
   assert.ok(await isGameOver(), 'a win/lose screen should appear after all ships are sunk');
   assert.strictEqual(jsErrors.length, 0, `JS errors: ${jsErrors.join('; ')}`);
 }
