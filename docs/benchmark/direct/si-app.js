@@ -10,8 +10,8 @@ function LivesDisplay({ lives }) {
 function HUD({ score, hiScore, level, lives }) {
   return html`<div class="hud">
     <div class="hud-item"><span class="hud-label">SCORE</span><span class="hud-value">${String(score).padStart(5,'0')}</span></div>
-    <div class="hud-item"><span class="hud-label">HI-SCORE</span><span class="hud-value" style="color:#ffb800">${String(hiScore).padStart(5,'0')}</span></div>
-    <div class="hud-item"><span class="hud-label">LEVEL</span><span class="hud-value" style="color:#4da6ff">${level}</span></div>
+    <div class="hud-item"><span class="hud-label">HI-SCORE</span><span class="hud-value" style=${{color:'#ffb800'}}>${String(hiScore).padStart(5,'0')}</span></div>
+    <div class="hud-item"><span class="hud-label">LEVEL</span><span class="hud-value" style=${{color:'#4da6ff'}}>${level}</span></div>
     <div class="hud-item"><span class="hud-label">LIVES</span><${LivesDisplay} lives=${lives} /></div>
   </div>`;
 }
@@ -33,7 +33,7 @@ function StartOverlay({ onStart }) {
 function GameOverOverlay({ score, hiScore, onRestart }) {
   return html`<div class="overlay">
     <div class="overlay-content">
-      <h2 class="overlay-title" style="color:#ff4466">GAME OVER</h2>
+      <h2 class="overlay-title" style=${{color:'#ff4466'}}>GAME OVER</h2>
       <div class="overlay-score">SCORE: <span>${score}</span></div>
       ${score >= hiScore && score > 0 ? html`<div class="new-hi">NEW HI-SCORE!</div>` : null}
       <button class="btn-play" onClick=${onRestart}>PLAY AGAIN</button>
@@ -44,10 +44,10 @@ function GameOverOverlay({ score, hiScore, onRestart }) {
 function LevelClearOverlay({ level, score }) {
   return html`<div class="overlay">
     <div class="overlay-content">
-      <h2 class="overlay-title" style="color:#00ff88">WAVE CLEAR!</h2>
+      <h2 class="overlay-title" style=${{color:'#00ff88'}}>WAVE CLEAR!</h2>
       <div class="overlay-score">LEVEL ${level} COMPLETE</div>
-      <div class="overlay-score" style="font-size:0.8em;margin-top:8px">SCORE: ${score}</div>
-      <div style="color:#8888aa;margin-top:16px;font-size:0.7em">NEXT WAVE INCOMING…</div>
+      <div class="overlay-score" style=${{fontSize:'0.8em',marginTop:'8px'}}>SCORE: ${score}</div>
+      <div style=${{color:'#8888aa',marginTop:'16px',fontSize:'0.7em'}}>NEXT WAVE INCOMING…</div>
     </div>
   </div>`;
 }

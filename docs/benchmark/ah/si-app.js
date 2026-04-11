@@ -73,7 +73,6 @@
     }, [startGame]);
 
     useEffect(() => {
-      canvasRef.current = document.getElementById('si-canvas');
       const ctx = canvasRef.current.getContext('2d');
 
       // Draw idle aliens on 'start' phase via initial state
@@ -157,35 +156,36 @@
 
     return html`
       <div>
+        <canvas id="si-canvas" ref=${canvasRef} width=${CONFIG.CANVAS.W} height=${CONFIG.CANVAS.H} />
         ${(phase === 'play' || phase === 'levelclear') && html`
-          <div class="hud">
+          <div className="hud">
             <span>SCORE ${score.toString().padStart(6, '0')}</span>
             <span>HI ${hiScore.toString().padStart(6, '0')}</span>
             <span>LV ${level}</span>
-            <div class="hud-lives">${shipIcons}</div>
+            <div className="hud-lives">${shipIcons}</div>
           </div>
         `}
 
         ${phase === 'start' && html`
-          <div class="overlay">
+          <div className="overlay">
             <h1>SPACE INVADERS</h1>
             <p>DEFEND EARTH — DESTROY ALL ALIENS</p>
-            <p style="font-size:0.7rem;color:#556677">ARROW KEYS / WASD TO MOVE · SPACE TO FIRE</p>
-            <button class="si-btn" onClick=${startGame}>PLAY</button>
+            <p style=${{fontSize:'0.7rem',color:'#556677'}}>ARROW KEYS / WASD TO MOVE · SPACE TO FIRE</p>
+            <button className="si-btn" onClick=${startGame}>PLAY</button>
           </div>
         `}
 
         ${phase === 'over' && html`
-          <div class="overlay">
+          <div className="overlay">
             <h1>GAME OVER</h1>
             <h2>SCORE: ${score.toString().padStart(6, '0')}</h2>
             <p>HI-SCORE: ${hiScore.toString().padStart(6, '0')}</p>
-            <button class="si-btn" onClick=${restartGame}>PLAY AGAIN</button>
+            <button className="si-btn" onClick=${restartGame}>PLAY AGAIN</button>
           </div>
         `}
 
         ${phase === 'levelclear' && html`
-          <div class="overlay">
+          <div className="overlay">
             <h1>LEVEL CLEAR</h1>
             <h2>LEVEL ${level}</h2>
           </div>
