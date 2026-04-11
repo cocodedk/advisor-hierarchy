@@ -896,6 +896,13 @@
 
     .bench-cost-note strong { color: var(--amber); font-style: normal; }
 
+    .bench-cover {
+      width: 100%;
+      display: block;
+      margin: 28px 0 24px;
+      border: 1px solid var(--dim);
+    }
+
     .bench-play-link {
       display: flex;
       align-items: center;
@@ -1170,6 +1177,72 @@
 <section class="section" id="benchmark">
   <div class="section-label">Benchmark · Breakout</div>
 
+  <svg class="bench-cover" viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <filter id="glow-ball" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="5" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glow-paddle" x="-30%" y="-80%" width="160%" height="260%">
+        <feGaussianBlur stdDeviation="3" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <!-- Background -->
+    <rect width="800" height="220" fill="#09090f"/>
+    <!-- Title watermark -->
+    <text x="20" y="200" font-family="'Bebas Neue', sans-serif" font-size="190" fill="rgba(255,255,255,0.03)" letter-spacing="4">BREAKOUT</text>
+    <!-- Brick rows: row1=amber, row2=amber-dim, row3=blue, row4=green, row5=green-dim -->
+    <!-- Row 1 — amber #ffb800 — y=22 -->
+    <rect x="60" y="22" width="88" height="22" rx="2" fill="#ffb800" opacity="0.9"/>
+    <rect x="156" y="22" width="88" height="22" rx="2" fill="#ffb800" opacity="0.9"/>
+    <rect x="252" y="22" width="88" height="22" rx="2" fill="#ffb800" opacity="0.9"/>
+    <rect x="348" y="22" width="88" height="22" rx="2" fill="#ffb800" opacity="0.9"/>
+    <rect x="444" y="22" width="88" height="22" rx="2" fill="#ffb800" opacity="0.9"/>
+    <rect x="540" y="22" width="88" height="22" rx="2" fill="#ffb800" opacity="0.9"/>
+    <rect x="636" y="22" width="88" height="22" rx="2" fill="#ffb800" opacity="0.9"/>
+    <!-- Row 2 — amber dim — y=48 -->
+    <rect x="60" y="48" width="88" height="22" rx="2" fill="#ffb800" opacity="0.45"/>
+    <rect x="156" y="48" width="88" height="22" rx="2" fill="#ffb800" opacity="0.45"/>
+    <rect x="252" y="48" width="88" height="22" rx="2" fill="#ffb800" opacity="0.45"/>
+    <rect x="348" y="48" width="88" height="22" rx="2" fill="#ffb800" opacity="0.45"/>
+    <!-- gap — brick removed by ball -->
+    <rect x="540" y="48" width="88" height="22" rx="2" fill="#ffb800" opacity="0.45"/>
+    <rect x="636" y="48" width="88" height="22" rx="2" fill="#ffb800" opacity="0.45"/>
+    <!-- Row 3 — blue — y=74 -->
+    <rect x="60" y="74" width="88" height="22" rx="2" fill="#4da6ff" opacity="0.8"/>
+    <rect x="156" y="74" width="88" height="22" rx="2" fill="#4da6ff" opacity="0.8"/>
+    <rect x="252" y="74" width="88" height="22" rx="2" fill="#4da6ff" opacity="0.8"/>
+    <rect x="348" y="74" width="88" height="22" rx="2" fill="#4da6ff" opacity="0.8"/>
+    <!-- gap -->
+    <rect x="540" y="74" width="88" height="22" rx="2" fill="#4da6ff" opacity="0.8"/>
+    <rect x="636" y="74" width="88" height="22" rx="2" fill="#4da6ff" opacity="0.8"/>
+    <!-- Row 4 — green — y=100 -->
+    <rect x="60" y="100" width="88" height="22" rx="2" fill="#00ff88" opacity="0.7"/>
+    <rect x="156" y="100" width="88" height="22" rx="2" fill="#00ff88" opacity="0.7"/>
+    <rect x="252" y="100" width="88" height="22" rx="2" fill="#00ff88" opacity="0.7"/>
+    <rect x="348" y="100" width="88" height="22" rx="2" fill="#00ff88" opacity="0.7"/>
+    <rect x="444" y="100" width="88" height="22" rx="2" fill="#00ff88" opacity="0.7"/>
+    <rect x="540" y="100" width="88" height="22" rx="2" fill="#00ff88" opacity="0.7"/>
+    <rect x="636" y="100" width="88" height="22" rx="2" fill="#00ff88" opacity="0.7"/>
+    <!-- Row 5 — green dim — y=126 -->
+    <rect x="60" y="126" width="88" height="22" rx="2" fill="#00ff88" opacity="0.25"/>
+    <rect x="156" y="126" width="88" height="22" rx="2" fill="#00ff88" opacity="0.25"/>
+    <rect x="252" y="126" width="88" height="22" rx="2" fill="#00ff88" opacity="0.25"/>
+    <rect x="348" y="126" width="88" height="22" rx="2" fill="#00ff88" opacity="0.25"/>
+    <rect x="444" y="126" width="88" height="22" rx="2" fill="#00ff88" opacity="0.25"/>
+    <rect x="540" y="126" width="88" height="22" rx="2" fill="#00ff88" opacity="0.25"/>
+    <rect x="636" y="126" width="88" height="22" rx="2" fill="#00ff88" opacity="0.25"/>
+    <!-- Ball trail -->
+    <circle cx="456" cy="162" r="4" fill="#ffffff" opacity="0.15"/>
+    <circle cx="462" cy="150" r="5" fill="#ffffff" opacity="0.3"/>
+    <circle cx="468" cy="138" r="6" fill="#ffffff" opacity="0.55"/>
+    <!-- Ball -->
+    <circle cx="474" cy="126" r="7" fill="#ffffff" filter="url(#glow-ball)"/>
+    <!-- Paddle -->
+    <rect x="370" y="196" width="110" height="11" rx="4" fill="#00ff88" opacity="0.85" filter="url(#glow-paddle)"/>
+  </svg>
+
   <p class="bench-intro">
     We built the same Breakout game twice — <strong>once directly</strong>, once via <strong>/ah</strong> —
     from an identical spec, same model family. The forced decomposition into sequential Sonnet passes
@@ -1242,6 +1315,67 @@
 
   <div class="section-label" style="margin-top: 64px;">Benchmark · Battleship</div>
 
+  <svg class="bench-cover" viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <filter id="glow-ship" x="-20%" y="-40%" width="140%" height="180%">
+        <feGaussianBlur stdDeviation="4" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <!-- Background -->
+    <rect width="800" height="220" fill="#09090f"/>
+    <!-- Title watermark -->
+    <text x="10" y="195" font-family="'Bebas Neue', sans-serif" font-size="140" fill="rgba(255,255,255,0.03)" letter-spacing="2">BATTLESHIP</text>
+    <!-- Ocean grid (right portion) — 8×8 grid, cell=52px, origin (330,14) -->
+    <!-- Horizontal lines -->
+    <line x1="330" y1="14" x2="746" y2="14" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="330" y1="40" x2="746" y2="40" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="330" y1="66" x2="746" y2="66" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="330" y1="92" x2="746" y2="92" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="330" y1="118" x2="746" y2="118" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="330" y1="144" x2="746" y2="144" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="330" y1="170" x2="746" y2="170" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="330" y1="196" x2="746" y2="196" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="330" y1="222" x2="746" y2="222" stroke="#3a3a52" stroke-width="0.75"/>
+    <!-- Vertical lines -->
+    <line x1="330" y1="14" x2="330" y2="222" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="382" y1="14" x2="382" y2="222" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="434" y1="14" x2="434" y2="222" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="486" y1="14" x2="486" y2="222" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="538" y1="14" x2="538" y2="222" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="590" y1="14" x2="590" y2="222" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="642" y1="14" x2="642" y2="222" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="694" y1="14" x2="694" y2="222" stroke="#3a3a52" stroke-width="0.75"/>
+    <line x1="746" y1="14" x2="746" y2="222" stroke="#3a3a52" stroke-width="0.75"/>
+    <!-- Ship 1: Destroyer (3 cells wide, horizontal) — row 2 cols 1-3 (y=40, x=330) -->
+    <rect x="335" y="45" width="150" height="16" rx="6" fill="#4da6ff" opacity="0.85" filter="url(#glow-ship)"/>
+    <!-- Ship 2: Submarine (2 cells) — row 5 cols 3-4 (y=118, x=434) -->
+    <rect x="439" y="123" width="98" height="16" rx="6" fill="#4da6ff" opacity="0.65"/>
+    <!-- Ship 3: Carrier (4 cells) — row 4 cols 4-7 (y=92, x=486) -->
+    <rect x="491" y="97" width="202" height="16" rx="6" fill="#4da6ff" opacity="0.5"/>
+    <!-- Hit markers (amber ×) -->
+    <!-- Hit at col 5, row 2 (x=538+13=551, y=40+13=53) -->
+    <line x1="550" y1="48" x2="566" y2="64" stroke="#ffb800" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="566" y1="48" x2="550" y2="64" stroke="#ffb800" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Hit at col 2, row 4 (x=382+13=395, y=92+13=105) -->
+    <line x1="394" y1="100" x2="410" y2="116" stroke="#ffb800" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="410" y1="100" x2="394" y2="116" stroke="#ffb800" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Hit at col 6, row 5 (x=642+13=655, y=118+13=131) -->
+    <line x1="654" y1="126" x2="670" y2="142" stroke="#ffb800" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="670" y1="126" x2="654" y2="142" stroke="#ffb800" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Miss markers (mid dots) -->
+    <circle cx="460" cy="57" r="4" fill="none" stroke="#8888aa" stroke-width="1.5"/>
+    <circle cx="564" cy="135" r="4" fill="none" stroke="#8888aa" stroke-width="1.5"/>
+    <circle cx="720" cy="83" r="4" fill="none" stroke="#8888aa" stroke-width="1.5"/>
+    <!-- Left panel: ship silhouette profile -->
+    <!-- Hull -->
+    <polygon points="30,155 80,135 270,135 310,155 270,170 80,170" fill="#4da6ff" opacity="0.18"/>
+    <!-- Conning tower -->
+    <rect x="130" y="112" width="90" height="25" rx="2" fill="#4da6ff" opacity="0.25"/>
+    <!-- Gun barrel -->
+    <line x1="180" y1="112" x2="180" y2="90" stroke="#4da6ff" stroke-width="3" opacity="0.35" stroke-linecap="round"/>
+  </svg>
+
   <p class="bench-intro">
     The same Battleship game built twice — <strong>once directly</strong>, once via <strong>/ah</strong> —
     from an identical spec. The hierarchy's forced decomposition improved <strong>both</strong> dimensions:
@@ -1309,6 +1443,130 @@
   </div>
 
   <div class="section-label" style="margin-top: 64px;">Benchmark · Space Invaders</div>
+
+  <svg class="bench-cover" viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <filter id="glow-laser" x="-200%" y="-10%" width="500%" height="120%">
+        <feGaussianBlur stdDeviation="3" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glow-alien" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="2.5" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <!-- Background -->
+    <rect width="800" height="220" fill="#09090f"/>
+    <!-- Title watermark -->
+    <text x="10" y="200" font-family="'Bebas Neue', sans-serif" font-size="130" fill="rgba(255,255,255,0.03)" letter-spacing="3">SPACE INVADERS</text>
+    <!-- Stars -->
+    <circle cx="45" cy="18" r="1" fill="#8888aa" opacity="0.6"/>
+    <circle cx="120" cy="42" r="1.5" fill="#8888aa" opacity="0.4"/>
+    <circle cx="200" cy="12" r="1" fill="#8888aa" opacity="0.5"/>
+    <circle cx="310" cy="55" r="1" fill="#8888aa" opacity="0.35"/>
+    <circle cx="390" cy="28" r="2" fill="#8888aa" opacity="0.3"/>
+    <circle cx="500" cy="8" r="1" fill="#8888aa" opacity="0.55"/>
+    <circle cx="600" cy="35" r="1.5" fill="#8888aa" opacity="0.4"/>
+    <circle cx="700" cy="15" r="1" fill="#8888aa" opacity="0.5"/>
+    <circle cx="760" cy="48" r="1" fill="#8888aa" opacity="0.35"/>
+    <circle cx="80" cy="75" r="1" fill="#8888aa" opacity="0.25"/>
+    <!-- Row 1 — 5 aliens, mid colour, y=30 -->
+    <!-- Alien: rounded rect body + 2 antenna dots + 2 eye rects -->
+    <!-- Alien 1 at x=90 -->
+    <rect x="90" y="28" width="36" height="22" rx="5" fill="#8888aa" opacity="0.55" filter="url(#glow-alien)"/>
+    <rect x="96" y="33" width="7" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="113" y="33" width="7" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <line x1="100" y1="28" x2="97" y2="20" stroke="#8888aa" stroke-width="1.5" opacity="0.55"/>
+    <line x1="116" y1="28" x2="119" y2="20" stroke="#8888aa" stroke-width="1.5" opacity="0.55"/>
+    <!-- Alien 2 at x=190 -->
+    <rect x="190" y="28" width="36" height="22" rx="5" fill="#8888aa" opacity="0.55" filter="url(#glow-alien)"/>
+    <rect x="196" y="33" width="7" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="213" y="33" width="7" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <line x1="200" y1="28" x2="197" y2="20" stroke="#8888aa" stroke-width="1.5" opacity="0.55"/>
+    <line x1="216" y1="28" x2="219" y2="20" stroke="#8888aa" stroke-width="1.5" opacity="0.55"/>
+    <!-- Alien 3 at x=290 -->
+    <rect x="290" y="28" width="36" height="22" rx="5" fill="#8888aa" opacity="0.55" filter="url(#glow-alien)"/>
+    <rect x="296" y="33" width="7" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="313" y="33" width="7" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <line x1="300" y1="28" x2="297" y2="20" stroke="#8888aa" stroke-width="1.5" opacity="0.55"/>
+    <line x1="316" y1="28" x2="319" y2="20" stroke="#8888aa" stroke-width="1.5" opacity="0.55"/>
+    <!-- Alien 4 at x=390 -->
+    <rect x="390" y="28" width="36" height="22" rx="5" fill="#8888aa" opacity="0.55" filter="url(#glow-alien)"/>
+    <rect x="396" y="33" width="7" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="413" y="33" width="7" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <line x1="400" y1="28" x2="397" y2="20" stroke="#8888aa" stroke-width="1.5" opacity="0.55"/>
+    <line x1="416" y1="28" x2="419" y2="20" stroke="#8888aa" stroke-width="1.5" opacity="0.55"/>
+    <!-- Alien 5 at x=490 -->
+    <rect x="490" y="28" width="36" height="22" rx="5" fill="#8888aa" opacity="0.55" filter="url(#glow-alien)"/>
+    <rect x="496" y="33" width="7" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="513" y="33" width="7" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <line x1="500" y1="28" x2="497" y2="20" stroke="#8888aa" stroke-width="1.5" opacity="0.55"/>
+    <line x1="516" y1="28" x2="519" y2="20" stroke="#8888aa" stroke-width="1.5" opacity="0.55"/>
+    <!-- Row 2 — 5 aliens, blue colour, y=72 -->
+    <rect x="90" y="72" width="42" height="24" rx="5" fill="#4da6ff" opacity="0.65" filter="url(#glow-alien)"/>
+    <rect x="97" y="79" width="8" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="117" y="79" width="8" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <line x1="98" y1="72" x2="94" y2="63" stroke="#4da6ff" stroke-width="1.5" opacity="0.65"/>
+    <line x1="124" y1="72" x2="128" y2="63" stroke="#4da6ff" stroke-width="1.5" opacity="0.65"/>
+    <rect x="193" y="72" width="42" height="24" rx="5" fill="#4da6ff" opacity="0.65" filter="url(#glow-alien)"/>
+    <rect x="200" y="79" width="8" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="220" y="79" width="8" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <line x1="201" y1="72" x2="197" y2="63" stroke="#4da6ff" stroke-width="1.5" opacity="0.65"/>
+    <line x1="227" y1="72" x2="231" y2="63" stroke="#4da6ff" stroke-width="1.5" opacity="0.65"/>
+    <rect x="296" y="72" width="42" height="24" rx="5" fill="#4da6ff" opacity="0.65" filter="url(#glow-alien)"/>
+    <rect x="303" y="79" width="8" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="323" y="79" width="8" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <line x1="304" y1="72" x2="300" y2="63" stroke="#4da6ff" stroke-width="1.5" opacity="0.65"/>
+    <line x1="330" y1="72" x2="334" y2="63" stroke="#4da6ff" stroke-width="1.5" opacity="0.65"/>
+    <rect x="399" y="72" width="42" height="24" rx="5" fill="#4da6ff" opacity="0.65" filter="url(#glow-alien)"/>
+    <rect x="406" y="79" width="8" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="426" y="79" width="8" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <line x1="407" y1="72" x2="403" y2="63" stroke="#4da6ff" stroke-width="1.5" opacity="0.65"/>
+    <line x1="433" y1="72" x2="437" y2="63" stroke="#4da6ff" stroke-width="1.5" opacity="0.65"/>
+    <rect x="502" y="72" width="42" height="24" rx="5" fill="#4da6ff" opacity="0.65" filter="url(#glow-alien)"/>
+    <rect x="509" y="79" width="8" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="529" y="79" width="8" height="5" rx="1" fill="#09090f" opacity="0.8"/>
+    <line x1="510" y1="72" x2="506" y2="63" stroke="#4da6ff" stroke-width="1.5" opacity="0.65"/>
+    <line x1="536" y1="72" x2="540" y2="63" stroke="#4da6ff" stroke-width="1.5" opacity="0.65"/>
+    <!-- Row 3 — 5 aliens, green colour, y=120 -->
+    <rect x="86" y="120" width="48" height="26" rx="5" fill="#00ff88" opacity="0.75" filter="url(#glow-alien)"/>
+    <rect x="93" y="128" width="9" height="6" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="118" y="128" width="9" height="6" rx="1" fill="#09090f" opacity="0.8"/>
+    <!-- claw arcs -->
+    <path d="M88,144 Q82,150 88,156" fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.75"/>
+    <path d="M132,144 Q138,150 132,156" fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.75"/>
+    <rect x="190" y="120" width="48" height="26" rx="5" fill="#00ff88" opacity="0.75" filter="url(#glow-alien)"/>
+    <rect x="197" y="128" width="9" height="6" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="222" y="128" width="9" height="6" rx="1" fill="#09090f" opacity="0.8"/>
+    <path d="M192,144 Q186,150 192,156" fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.75"/>
+    <path d="M236,144 Q242,150 236,156" fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.75"/>
+    <rect x="294" y="120" width="48" height="26" rx="5" fill="#00ff88" opacity="0.75" filter="url(#glow-alien)"/>
+    <rect x="301" y="128" width="9" height="6" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="326" y="128" width="9" height="6" rx="1" fill="#09090f" opacity="0.8"/>
+    <path d="M296,144 Q290,150 296,156" fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.75"/>
+    <path d="M340,144 Q346,150 340,156" fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.75"/>
+    <rect x="398" y="120" width="48" height="26" rx="5" fill="#00ff88" opacity="0.75" filter="url(#glow-alien)"/>
+    <rect x="405" y="128" width="9" height="6" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="430" y="128" width="9" height="6" rx="1" fill="#09090f" opacity="0.8"/>
+    <path d="M400,144 Q394,150 400,156" fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.75"/>
+    <path d="M444,144 Q450,150 444,156" fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.75"/>
+    <rect x="502" y="120" width="48" height="26" rx="5" fill="#00ff88" opacity="0.75" filter="url(#glow-alien)"/>
+    <rect x="509" y="128" width="9" height="6" rx="1" fill="#09090f" opacity="0.8"/>
+    <rect x="534" y="128" width="9" height="6" rx="1" fill="#09090f" opacity="0.8"/>
+    <path d="M504,144 Q498,150 504,156" fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.75"/>
+    <path d="M548,144 Q554,150 548,156" fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.75"/>
+    <!-- Player cannon -->
+    <rect x="585" y="188" width="50" height="12" rx="3" fill="#ffb800" opacity="0.9"/>
+    <rect x="603" y="178" width="14" height="14" rx="2" fill="#ffb800" opacity="0.9"/>
+    <rect x="608" y="168" width="4" height="14" rx="1" fill="#ffb800" opacity="0.9"/>
+    <!-- Laser beam -->
+    <rect x="609" y="90" width="3" height="80" rx="1" fill="#00ff88" filter="url(#glow-laser)"/>
+    <!-- UFO bonus -->
+    <ellipse cx="680" cy="48" rx="30" ry="10" fill="#ffb800" opacity="0.4"/>
+    <ellipse cx="680" cy="44" rx="15" ry="7" fill="#ffb800" opacity="0.5"/>
+    <line x1="658" y1="48" x2="650" y2="48" stroke="#ffb800" stroke-width="1.5" opacity="0.4"/>
+    <line x1="702" y1="48" x2="710" y2="48" stroke="#ffb800" stroke-width="1.5" opacity="0.4"/>
+  </svg>
 
   <p class="bench-intro">
     The same Space Invaders game built twice — <strong>once directly</strong>, once via <strong>/ah</strong> —
