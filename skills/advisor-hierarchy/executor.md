@@ -15,7 +15,7 @@ Execute your subtask completely. Consult the advisor when needed. Report status.
 4. **Consult the Opus advisor at these moments only:**
    - Before a non-trivial architectural decision
    - Stuck: same error 2+ times, or 2 different approaches failed
-   - Task complete and took >2 tool calls — final check before `DONE`
+   - Task complete and took >3 tool calls — final check before `DONE`
    - All 3 advisor calls used before final check → `DONE_WITH_CONCERNS` noting check was skipped
 5. Max 3 advisor calls. Still stuck after 3 → `BLOCKED`.
 6. Follow advisor guidance. File says X, advisor says Y → one clarifying call.

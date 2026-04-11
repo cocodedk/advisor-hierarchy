@@ -50,7 +50,7 @@ No changes to `executor.md` or `advisor.md`. Tier resolution is the master's res
 
 Replace hardcoded model names in the executor spawn template:
 
-```
+```js
 Agent({
   model: <value for FAST or CAPABLE tier from Step 0>,
   ...

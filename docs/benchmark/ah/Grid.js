@@ -24,8 +24,8 @@ function GridBoard({ id, cells, onCellClick, onCellEnter, onCellLeave }) {
   for (let r = 0; r < 10; r++) {
     rows.push(html`<div key=${'row-' + r} className="coord-label">${ROWS[r]}</div>`);
     for (let c = 0; c < 10; c++) {
-      const cellData = cells[r * 10 + c];
-      const className = 'cell' + (cellData.classes.length ? ' ' + cellData.classes.join(' ') : '');
+      const cellData = cells?.[r * 10 + c];
+      const className = 'cell' + (cellData?.classes?.length ? ' ' + cellData.classes.join(' ') : '');
       rows.push(
         html`<div
           key=${r + '-' + c}

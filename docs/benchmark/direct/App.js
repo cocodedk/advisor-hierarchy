@@ -105,7 +105,7 @@ function App() {
               const res = placeShip(game.playerGrid, game.playerShips, shipIdx, r, c, orient);
               const ni = shipIdx + 1;
               setGame(prev => ({ ...prev, playerGrid: res.grid, playerShips: res.ships, shipIdx: ni,
-                phase: ni >= SHIPS.length ? 'battle' : 'placement', hoverRow: -1, hoverCol: -1 }));
+                hoverRow: -1, hoverCol: -1 }));
             }}
             onCellEnter=${(r,c) => phase === 'placement' && setGame(prev => ({ ...prev, hoverRow: r, hoverCol: c }))}
             onCellLeave=${() => phase === 'placement' && setGame(prev => ({ ...prev, hoverRow: -1, hoverCol: -1 }))} />
@@ -131,7 +131,8 @@ function App() {
         <button className="btn danger" onClick=${() => setGame(prev => ({ ...prev, shipIdx: 0,
           playerGrid: emptyGrid(), playerShips: SHIPS.map(s => ({ ...s, cells: [], sunk: false, hits: 0 })),
           hoverRow: -1, hoverCol: -1 }))}>Reset</button>
-        <button id="btn-ready" className="btn success" disabled=${!allPlaced}>START BATTLE</button>
+        <button id="btn-ready" className="btn success" disabled=${!allPlaced}
+          onClick=${() => setGame(prev => ({ ...prev, phase: 'battle', turn: 'player' }))}>START BATTLE</button>
       </div>`}
     </div>`}
   </div>`;

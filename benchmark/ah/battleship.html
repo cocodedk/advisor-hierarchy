@@ -434,7 +434,8 @@ function autoPlaceShips(grid) {
       }
     }
     if (!placed) {
-      return autoPlaceShips(grid);
+      const freshGrid = Array.from({ length: 10 }, () => Array(10).fill('empty'));
+      return autoPlaceShips(freshGrid);
     }
   }
   return ships;

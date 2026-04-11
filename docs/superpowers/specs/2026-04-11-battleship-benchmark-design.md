@@ -27,6 +27,7 @@ Player places 5 ships on their own grid before battle begins:
 - **Random button:** auto-places all 5 ships at valid non-overlapping positions
 
 Ships:
+
 | Name | Size |
 |---|---|
 | Carrier | 5 |
@@ -34,6 +35,8 @@ Ships:
 | Cruiser | 3 |
 | Submarine | 3 |
 | Destroyer | 2 |
+
+
 
 ### Battle Phase
 
