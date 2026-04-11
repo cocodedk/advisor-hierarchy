@@ -100,6 +100,10 @@ const SFX = (() => {
 
     // Phase transitions that reset state
     if (phase === 'gameover' || (phase === 'playing' && prev.phase !== 'playing')) {
+      // Play death sound if lives just dropped (gameover transition)
+      if (phase === 'gameover' && state.lives < prev.lives) {
+        playTone('sawtooth', 440, 55, 0.5, 0.35);
+      }
       stopUfo();
       prev = snapshot(state);
       return;
@@ -152,7 +156,9 @@ const SFX = (() => {
   }
 
   function countAlive(state) {
-    return state.aliens.flat().filter(a => a.alive).length;
+    let n = 0;
+    for (const row of state.aliens) for (const a of row) if (a.alive) n++;
+    return n;
   }
 
   function snapshot(state) {

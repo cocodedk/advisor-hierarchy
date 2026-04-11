@@ -5,6 +5,7 @@ const SFX = (() => {
   let ufoOsc = null;
   let ufoLfo = null;
   let ufoGain = null;
+  let levelClearTimers = [];
 
   function getCtx() {
     if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -80,10 +81,15 @@ const SFX = (() => {
     ufoGain = null;
   }
 
+  function cancelLevelClear() {
+    levelClearTimers.forEach(id => clearTimeout(id));
+    levelClearTimers = [];
+  }
+
   function levelClear() {
     const notes = [261.63, 329.63, 392, 523.25];
     notes.forEach((freq, i) => {
-      setTimeout(() => playTone('sine', freq, freq, 0.15, 0.3), i * 160);
+      levelClearTimers.push(setTimeout(() => playTone('sine', freq, freq, 0.15, 0.3), i * 160));
     });
   }
 
@@ -104,6 +110,7 @@ const SFX = (() => {
 
     // Reset on game over or new game start
     if (phase === 'over' || (phase === 'play' && prev.phase === 'start')) {
+      cancelLevelClear();
       stopUfo();
       prev = null;
       return;
