@@ -1,3 +1,8 @@
 #!/bin/sh
 set -eu
-npm test
+
+SMOKE_CMD="npm test"
+
+echo "Running pre-commit checks..."
+$SMOKE_CMD
+echo "Pre-commit checks passed."
