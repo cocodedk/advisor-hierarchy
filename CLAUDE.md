@@ -1,60 +1,112 @@
-# CLAUDE.md
+# CLAUDE.md — advisor-hierarchy
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Project Overview
 
-## Default Skills
+A Claude Code skill installer. The npm package (`npx ah`) copies three Markdown skill files from `skills/advisor-hierarchy/` into `~/.claude/skills/advisor-hierarchy/` and registers a `/ah` command at `~/.claude/commands/ah.md`. There is no build step, no runtime library, no compilation. **The three skill files are the product.**
 
-Always use these skills when the task warrants them — do not wait to be asked:
+- **Language / Runtime**: Node.js 20 (CommonJS)
+- **Framework**: N/A — pure Node.js CLI installer
+- **Architecture**: Skill files + npm installer + GitHub Pages docs site
+- **Package**: `ah` on npm
 
-- **`/ah`** — use for any non-trivial task (multi-file changes, design decisions, anything with architectural impact). This repo is the source of that skill; use it on itself.
-- **`frontend-design:frontend-design`** — use for any change to `docs/index.html`. This site has a strong aesthetic; match it precisely.
-- **`superpowers:brainstorming`** → **`superpowers:writing-plans`** → **`superpowers:executing-plans`** — use for anything that requires more than a one-liner change.
+---
 
-## What This Repo Is
+## Required Skills — ALWAYS Invoke These
 
-A Claude Code skill installer. The npm package (`npx ah`) copies three Markdown skill files from `skills/advisor-hierarchy/` into `~/.claude/skills/advisor-hierarchy/` and registers a `/ah` command at `~/.claude/commands/ah.md`. There is no build step, no runtime library, no compilation.
+These skills **must** be invoked when the relevant situation arises. Never skip them.
 
-## Commands
+| Situation | Skill |
+|-----------|-------|
+| Before any new feature or screen | `superpowers:brainstorming` |
+| Planning multi-step changes | `superpowers:writing-plans` |
+| Writing or fixing core logic | `superpowers:test-driven-development` |
+| First sign of a bug or failure | `superpowers:systematic-debugging` |
+| Before completing a feature branch | `superpowers:requesting-code-review` |
+| Before claiming any task done | `superpowers:verification-before-completion` |
+| Working on UI / frontend | `frontend-design:frontend-design` |
+| After implementing — reviewing quality | `simplify` |
 
-```bash
-# Run tests
-npm test                         # or: node --test test/ah.test.js
-
-# Install git pre-commit hook (runs npm test before every commit)
-./scripts/install-hooks.sh
-
-# Install the skill locally (useful after editing skill files)
-node bin/ah.js
-
-# Uninstall the skill
-node bin/ah.js uninstall
-```
+---
 
 ## Architecture
 
 ```
-skills/advisor-hierarchy/   ← The skill (source of truth)
-  SKILL.md                  ← Master: decomposes, classifies, dispatches executors
-  executor.md               ← Executor: Haiku/Sonnet, does the work, calls Opus ≤3×
-  advisor.md                ← Advisor: Opus only, advice-only, no tools, ≤150 words
-
-bin/ah.js                   ← CLI installer: copies skills/ → ~/.claude/skills/, creates command file
-test/ah.test.js             ← Tests install/uninstall/idempotency via node:test (CommonJS)
-docs/index.html             ← GitHub Pages site (single-file, all CSS inline)
-docs/benchmark/             ← Live Breakout game files served by GitHub Pages
+advisor-hierarchy/
+├── skills/advisor-hierarchy/  <- The skill (source of truth)
+│   ├── SKILL.md               <- Master: decomposes, classifies, dispatches executors
+│   ├── executor.md            <- Executor: does the work, calls advisor ≤3×
+│   └── advisor.md             <- Advisor: Opus only, advice-only, ≤150 words
+├── bin/ah.js                  <- CLI installer
+├── test/                      <- Node.js test runner tests
+├── docs/index.html            <- GitHub Pages site (single-file)
+└── CLAUDE.md                  <- This file
 ```
 
-**The three skill files are the product.** Everything else (npm package, tests, docs site) exists to distribute and explain them.
+### Layer Rules
+- Master never executes — it decomposes and delegates only
+- Executor consults advisor at exactly 3 moments: before non-trivial architectural decisions, when stuck, and before reporting DONE if >3 tool calls
+- Advisor is advice-only: no tools, no user-facing output, imperative tone, ≤150 words
+- All benchmark game files and their test files must be under 200 lines each
 
-## Skill Design Rules
+---
 
-When editing skill files (`skills/advisor-hierarchy/*.md`):
+## Coding Conventions
 
-- **Master never executes** — it decomposes and delegates only. If you catch master doing file writes or running commands, that's a bug.
-- **Executor consults Opus advisor at exactly 3 moments:** before non-trivial architectural decisions, when stuck (same error 2+ times), and before reporting DONE if the task required >3 tool calls. Cap at 3 advisor calls total per task.
-- **Advisor is advice-only** — no tools, no user-facing output, imperative tone, ≤150 words. It signals `STOP` if the task is fundamentally broken.
-- **Executors report status:** `DONE` / `DONE_WITH_CONCERNS: [x]` / `NEEDS_CONTEXT: [x]` / `BLOCKED`
-- **Model classification:** Haiku for mechanical/isolated changes (1-2 files, unambiguous spec); Sonnet for anything with judgment calls, multi-file impact, or integration concerns.
+- [ ] All models are **immutable** — use `copy()` / spread for mutations
+- [ ] Functions are **pure** where possible — no hidden side effects
+- [ ] State is a single source of truth per feature
+- [ ] No hardcoded strings — use constants, config, or i18n resources
+- [ ] CommonJS modules throughout
+
+---
+
+## Engineering Principles
+
+### File Size
+- **200-line maximum per file** — extract a class, function, or module when approaching the limit
+
+### DRY · SOLID · KISS · YAGNI
+- Extract shared logic into named utilities; never copy-paste
+- Single Responsibility: one class/function does one thing
+- Don't add features not yet needed
+- Delete dead code immediately
+
+### TDD
+- Write the failing test first, make it pass, then refactor
+- Test names describe behaviour: `"should reject duplicate email"`
+- One assertion per test — keep tests focused and readable
+
+### Commit hygiene
+- Follow Conventional Commits: `feat: ...` / `fix: ...` / `chore: ...`
+- The `commit-msg` hook enforces this automatically
+
+---
+
+## Build Commands
+
+```bash
+npm test                    # Run unit tests
+node bin/ah.js              # Install skill locally
+node bin/ah.js uninstall    # Uninstall skill
+./scripts/install-hooks.sh  # Install git pre-commit hook
+```
+
+---
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `CLAUDE.md` | This file — project conventions and session startup |
+| `version.txt` | Semantic version (MAJOR.MINOR.PATCH) |
+| `skills/advisor-hierarchy/SKILL.md` | Master tier skill definition |
+| `skills/advisor-hierarchy/executor.md` | Executor tier skill definition |
+| `skills/advisor-hierarchy/advisor.md` | Advisor tier skill definition |
+| `.github/workflows/` | CI, release, and Pages automation |
+| `.githooks/` | Pre-commit and commit-msg hooks |
+| `scripts/install-hooks.sh` | One-time hook installer |
+
+---
 
 ## docs/index.html Design System
 
@@ -67,27 +119,13 @@ Changes to the GitHub Pages site must match the existing aesthetic precisely:
 --blue: #4da6ff     /* secondary */
 --dim: #3a3a52      /* borders, subdued elements */
 --mid: #8888aa      /* secondary text */
-
-/* Fonts */
-Bebas Neue          /* display / headings */
-JetBrains Mono      /* monospace / code / buttons */
 ```
 
-Button pattern: `.btn` base + `.btn-primary` (green fill → ghost on hover) or `.btn-ghost` (dim border → green on hover).
+---
 
-## Benchmark File Rules
+## Starting a New Session
 
-All benchmark game files and their test files **must not exceed 200 lines each**. This means:
-
-- Games must be **modularized**: split into separate JS files (game logic, rendering, AI, state, etc.) rather than one monolithic HTML file
-- If a framework makes the code easier to read, debug, and test, **prefer React** (via CDN — no build step) over vanilla JS for benchmark game files
-- Test files must also be under 200 lines — split into multiple describe-level files if needed
-- The 200-line limit is a hard constraint; refactor proactively when adding features
-
-## GitHub Pages Deploy
-
-Automatically deploys on push to `master` when files under `docs/**` change. Games in `benchmark/` at the repo root are **not** served — copies live at `docs/benchmark/` for GitHub Pages.
-
-## Testing Skill Changes
-
-Unit tests only cover the npm installer (`bin/ah.js`). Skill content (`.md` files) has no automated tests — validate by invoking `/ah` on a real task in Claude Code and checking that the hierarchy decomposes, delegates, and synthesizes correctly.
+1. Read this file
+2. Run `npm test` to confirm everything passes
+3. Invoke `superpowers:brainstorming` before touching any feature
+4. Follow the Required Skills table — every skill is mandatory, not optional

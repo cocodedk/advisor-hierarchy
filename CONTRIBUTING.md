@@ -1,44 +1,69 @@
 # Contributing to advisor-hierarchy
 
-Thank you for your interest in contributing. This project is maintained by [Babak Bandpey](https://www.linkedin.com/in/babakbandpey) at [cocode.dk](https://cocode.dk).
+Thank you for your interest in contributing. This project is maintained by [Babak Bandpey](https://www.linkedin.com/in/babakbandpey) at [Cocode](https://cocode.dk).
 
-## What belongs here
+## Local Setup
+1. Install Node.js 20+.
+2. Clone the repository.
+3. Install dependencies: `npm install`
+4. Install Git hooks (see below).
 
-Skills, rules, and documentation that improve the 3-tier agent hierarchy for general-purpose coding and writing tasks. Changes should benefit any Claude Code user regardless of their project domain.
-
-## What does not belong here
-
-- Project-specific rules or domain-specific skill variants
-- Dependencies on third-party services
-- Changes that auto-trigger the skill (it must remain explicitly invoked)
-
-## How to contribute
-
-1. Fork the repo
-2. Create a branch: `git checkout -b your-feature`
-3. Install git hooks: `./scripts/install-hooks.sh`
-4. Make your changes
-5. Test by running `npx ah` and invoking `/ah` on a real task
-6. Open a pull request describing: what you changed, why, and how you tested it
-
-## Testing skills
-
-Skills are Markdown — there are no unit tests. Testing means:
-1. Install with `npx ah`
-2. Invoke `/ah "some task"` in Claude Code
-3. Verify the master decomposes and delegates correctly
-4. Verify executors consult Opus at appropriate moments
-5. Verify Opus responses are advice-only (no tool calls, no user output)
-
-## Running tests
-
-```bash
-node --test test/ah.test.js
+## Install Git Hooks
+```sh
+./scripts/install-hooks.sh
 ```
 
-## Reporting issues
+## Local Git Setup
+Run these once after cloning:
+```bash
+git config pull.rebase true
+git config core.autocrlf input
+git config push.autoSetupRemote true
+git config init.defaultBranch main
+```
 
-Open a GitHub issue at https://github.com/cocodedk/advisor-hierarchy/issues with:
-- What you expected to happen
-- What actually happened
-- The task you gave to `/ah`
+## Build and Test Commands
+```bash
+npm test           # Run unit tests
+npm test -- --watch  # Watch mode
+node bin/ah.js     # Install skill locally
+node bin/ah.js uninstall  # Uninstall skill
+```
+
+## What Belongs Here
+
+Changes to this repo fall into two categories:
+
+1. **Skill content** — `skills/advisor-hierarchy/*.md` — the Markdown instructions that define the advisor-hierarchy behavior. No compilation or build step.
+2. **Installer and tests** — `bin/ah.js`, `test/ah.test.js` — the npm package that distributes the skill.
+
+## Skill Design Rules
+
+- **Master never executes** — it decomposes and delegates only.
+- **Executor consults advisor at most 3 times** per task.
+- **Advisor is advice-only** — no tools, no user-facing output, ≤150 words.
+- Keep all benchmark game files and their test files under 200 lines each.
+
+## Coding Style
+- CommonJS modules (the installer uses `require`)
+- Keep files small and focused — 200-line maximum
+- Follow Conventional Commits for all commit messages
+
+## PR Checklist
+- [ ] Tests pass (`npm test`)
+- [ ] Manual test: install skill with `node bin/ah.js` and verify it works
+- [ ] Skill changes validated by invoking `/ah` on a real task
+- [ ] Updated docs if behavior changed
+
+## Branch Naming Conventions
+
+| Branch prefix | Conventional Commit type | Example |
+|---|---|---|
+| `feature/` | `feat:` | `feature/add-new-executor-tier` |
+| `fix/` | `fix:` | `fix/install-path-on-windows` |
+| `chore/` | `chore:` | `chore/update-dependencies` |
+| `docs/` | `docs:` | `docs/update-skill-design-rules` |
+| `refactor/` | `refactor:` | `refactor/extract-tier-logic` |
+| `ci/` | `ci:` | `ci/add-dependabot` |
+
+Branch names use **kebab-case**. Never commit directly to `master` — always open a PR.
