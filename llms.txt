@@ -1,0 +1,29 @@
+# advisor-hierarchy
+
+> A Claude Code skill that implements a 3-tier agent hierarchy (Master + Executor + Apex Advisor). Enables complex multi-step tasks to be decomposed, dispatched in parallel waves, and synthesized with expert review.
+
+## Install
+
+```bash
+npx ah
+```
+
+## Stack
+
+- Node.js (CommonJS), no build step
+- Three Markdown skill files are the core product
+
+## Author
+
+- **Name**: Babak Bandpey
+- **Website**: https://cocode.dk
+- **LinkedIn**: https://linkedin.com/in/babakbandpey
+- **GitHub**: https://github.com/cocodedk
+
+## Repository
+
+- **GitHub**: https://github.com/cocodedk/advisor-hierarchy
+
+## License
+
+Apache-2.0 | © 2026 [Cocode](https://cocode.dk)
