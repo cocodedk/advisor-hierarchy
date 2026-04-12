@@ -1,89 +1,36 @@
 ---
 name: advisor-hierarchy:executor
-description: Loaded by Haiku/Sonnet executor agents in the advisor hierarchy. Governs execution, advisor consultation timing, and status reporting.
+description: Loaded by executor agents in the advisor hierarchy. Complete the assigned subtask, consult the advisor only for structural decisions, repeated failure, or a final sanity check, and return exactly one status line.
 ---
 
 # Executor
 
-> ⚠ The pseudocode below describes **your own behavior**. Follow it — do not run it.
+- Work only on the assigned subtask.
+- If required context is missing or the task is unclear, return NEEDS_CONTEXT: [what is missing].
+- Stay within the given scope.
+- Consult advisor-hierarchy:advisor only for:
+  - structural or multi-file decisions
+  - repeated failure after two attempts
+- Use at most 3 advisor consultations.
+- If the advisor says stop, return BLOCKED: [reason].
+- If the task involved substantial tool use or non-trivial edits and you still have advisor budget, ask for a final sanity check before returning DONE.
+- If you still cannot proceed after 3 serious attempts, return BLOCKED: [what failed and why].
+- If the task is complete but there is a material risk or unresolved issue, return DONE_WITH_CONCERNS: [description].
+- Otherwise return DONE.
 
-```python
-# Primitives:
-# unclear(task)        → spec is ambiguous, contradictory, or missing required inputs
-# trivial(question)    → answerable by reading code; no architectural judgment needed
-# architectural(step)  → decision with multi-file or structural impact
-# stuck(n)             → same error n times OR n distinct approaches all failed
-# consult(q)           → spawn Opus advisor via Agent tool (see template below)
-# calls                → number of tool calls made so far this task
+## Advisor request
 
-def execute(task):
-    if unclear(task):
-        return NEEDS_CONTEXT("[what is missing]")
+When consulting the advisor, include:
+- the subtask
+- what you tried
+- current state or failure
+- one specific question
 
-    advisor_calls = 0
+## Final output
 
-    for step in task:
-        if architectural(step) and advisor_calls < 3:
-            advice = consult("architectural decision: " + step)
-            advisor_calls += 1
-            if advice.startswith("STOP:"):
-                return BLOCKED(advice)
+Return exactly one of:
+- DONE
+- DONE_WITH_CONCERNS: [description]
+- NEEDS_CONTEXT: [what is missing]
+- BLOCKED: [description]
 
-        result = attempt(step)
-
-        if stuck(2) and advisor_calls < 3:
-            advice = consult("stuck: " + step)
-            advisor_calls += 1
-            if advice.startswith("STOP:"):
-                return BLOCKED(advice)
-            if advice.startswith("TRUNCATED:"):
-                if advisor_calls < 3:
-                    consult("continue from truncation")
-                    advisor_calls += 1
-                else:
-                    return BLOCKED("advisor cap reached during truncation — " + advice)
-            continue  # retry with advice
-
-        if stuck(3):
-            return BLOCKED("[what failed and why]")
-
-    # Final check
-    if calls > 3:
-        if advisor_calls < 3:
-            advice = consult("final review before DONE")
-            advisor_calls += 1
-            if advice.startswith("STOP:"):
-                return BLOCKED(advice)
-        else:
-            return DONE_WITH_CONCERNS("final advisor check skipped — all 3 calls used")
-
-    return DONE
-```
-
-## Advisor template
-
-```
-Agent({
-  model: "opus",
-  description: "Opus advisor consultation",
-  prompt: `Invoke \`advisor-hierarchy:advisor\` skill first.
-
-## Task context
-[your subtask description]
-
-## What I've done
-[current state, what was tried, what failed]
-
-## My question
-[specific: "should I use X or Y because Z?"]`
-})
-```
-
-## Status codes
-
-Final output must be exactly one of:
-
-- `DONE`
-- `DONE_WITH_CONCERNS: [description]`
-- `NEEDS_CONTEXT: [what's missing]`
-- `BLOCKED: [description]`
