@@ -8,7 +8,7 @@ Built by [Babak Bandpey](https://www.linkedin.com/in/babakbandpey) at [cocode.dk
 
 ## Website
 
-- [cocodedk.github.io/advisor-hierarchy](https://cocodedk.github.io/advisor-hierarchy/)
+- [advisor.cocode.dk](https://advisor.cocode.dk/)
 
 ## Install
 
