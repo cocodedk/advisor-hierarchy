@@ -93,7 +93,10 @@
 
     /* ── HERO ── */
     .hero {
-      min-height: 100vh;
+      /* Was 100vh before <cocode-head> sat above it in normal flow; the fixed 71px is
+         that bar's own rendered height, measured — it doesn't reflow with viewport
+         width. Without this the "Scroll to explore" hint drops just below the fold. */
+      min-height: calc(100vh - 71px);
       display: grid;
       /* Was "auto 1fr auto" for nav/content/scroll-hint; nav moved out to <cocode-head>,
          so the hint row collapses to auto — otherwise it floats mid-hero in the 1fr gap. */
