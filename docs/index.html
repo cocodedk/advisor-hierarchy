@@ -506,7 +506,11 @@
       width: 32px;
     }
 
-    .step-content { flex: 1; }
+    /* min-width:0 overrides the flex item's default auto min-width, which would otherwise
+       hold this column open to the width of the longest unbreakable token in the shell
+       command below (e.g. the clone URL) and push the page wider instead of letting the
+       code block's own overflow-x:auto scroll it. */
+    .step-content { flex: 1; min-width: 0; }
 
     .step-label {
       font-size: 9px;
